@@ -41,31 +41,30 @@ export type Domain = {
   target: "projets" | "parcours";
 };
 
+/* View models below are built from database rows in `lib/content/index.ts`. */
+
 export type Project = {
   slug: string;
   title: Localized;
   kicker: Localized;
   summary: Localized;
-  problem?: Localized;
-  approach?: Localized;
-  outcome?: Localized;
+  /** Case-study lines, present only when all three are filled in. */
+  caseStudy?: { problem: Localized; approach: Localized; outcome: Localized };
   stack: string[];
-  image: ImageRef;
+  image: { src: string; alt: Localized };
   caption?: Localized;
   repoUrl?: string;
   liveUrl?: string;
   featured: boolean;
-  order: number;
 };
 
 export type TimelineEntry = {
-  kind: "experience" | "education";
+  id: string;
   period: Localized;
   title: Localized;
   organization: Localized;
-  current?: boolean;
+  current: boolean;
 };
 
-export type ToolIcon = "python" | "pandas" | "postgresql" | "laravel" | "nextjs" | "git";
-
-export type Tool = { name: string; icon: ToolIcon };
+/** A toolbox entry; `icon` is a simple-icons slug. */
+export type Tool = { name: string; icon: string };

@@ -1,0 +1,91 @@
+// Content managed from /admin. Translations live in sibling *Fr / *En columns,
+// read through `localized()` in lib/content.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Project {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  titleFr    String
+  titleEn    String
+  kickerFr   String
+  kickerEn   String
+  summaryFr  String
+  summaryEn  String
+  /// Optional case-study lines shown on the featured project.
+  problemFr  String?
+  problemEn  String?
+  approachFr String?
+  approachEn String?
+  outcomeFr  String?
+  outcomeEn  String?
+  stack      String[]
+  /// Path under /public (e.g. /images/projects/x.png) or an https URL.
+  imageUrl   String
+  imageAltFr String
+  imageAltEn String
+  captionFr  String?
+  captionEn  String?
+  repoUrl    String?
+  liveUrl    String?
+  featured   Boolean  @default(false)
+  published  Boolean  @default(true)
+  position   Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([published, position])
+}
+
+enum SkillCategory {
+  LANGUAGE
+  DATA
+  WEB
+  DATABASE
+  TOOLING
+  METHOD
+}
+
+model Skill {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  category      SkillCategory
+  /// simple-icons slug (e.g. "python", "postgresql"); required to appear in the toolbox.
+  icon          String?
+  showInToolbox Boolean       @default(false)
+  position      Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum TimelineKind {
+  EXPERIENCE
+  EDUCATION
+}
+
+model Experience {
+  id             String       @id @default(cuid())
+  kind           TimelineKind
+  titleFr        String
+  titleEn        String
+  organizationFr String
+  organizationEn String
+  /// Human-readable period, e.g. "Depuis mars 2025" / "Since March 2025".
+  periodFr       String
+  periodEn       String
+  /// Used only for ordering (newest first).
+  startDate      DateTime
+  current        Boolean      @default(false)
+  published      Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([kind, published])
+}

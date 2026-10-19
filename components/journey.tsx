@@ -14,7 +14,7 @@ function Timeline({ locale, entries }: { locale: Locale; entries: TimelineEntry[
   return (
     <ol className="tl">
       {entries.map((e) => (
-        <li className={e.current ? "is-current" : undefined} key={`${e.title.en}-${e.period.en}`}>
+        <li className={e.current ? "is-current" : undefined} key={e.id}>
           <span className="period">{e.period[locale]}</span>
           <h4>{e.title[locale]}</h4>
           <p>{e.organization[locale]}</p>

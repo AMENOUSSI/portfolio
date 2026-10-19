@@ -781,12 +781,21 @@ a {
   border-right: 1px solid var(--trait);
   margin: 0;
 }
-.feature-media img {
-  width: 100%;
-  height: auto;
+.feature-frame {
+  position: relative;
+  aspect-ratio: 5 / 3;
   border-radius: 12px;
   border: 1px solid var(--trait);
   background: #fff;
+  overflow: hidden;
+}
+.feature-frame img {
+  object-fit: contain;
+}
+.feature-summary {
+  color: var(--graphite);
+  font-size: 15.5px;
+  margin: 0 0 24px;
 }
 .caption {
   font-family: var(--mono);

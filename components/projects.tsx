@@ -56,29 +56,30 @@ export function Projects({ locale, t, featured, others }: Props) {
         {featured && (
           <article className="feature">
             <figure className="feature-media">
-              <Image
-                src={featured.image.src}
-                alt={featured.image.alt[locale]}
-                width={featured.image.width}
-                height={featured.image.height}
-                sizes="(max-width: 1000px) 92vw, 560px"
-              />
+              <div className="feature-frame">
+                <Image
+                  src={featured.image.src}
+                  alt={featured.image.alt[locale]}
+                  fill
+                  sizes="(max-width: 1000px) 92vw, 560px"
+                />
+              </div>
               {featured.caption && <figcaption className="caption">{featured.caption[locale]}</figcaption>}
             </figure>
             <div className="feature-body">
               <p className="kicker">{featured.kicker[locale]}</p>
               <h3>{featured.title[locale]}</h3>
-              {featured.problem && featured.approach && featured.outcome ? (
+              {featured.caseStudy ? (
                 <dl className="pal">
                   <dt>{t.problem}</dt>
-                  <dd>{featured.problem[locale]}</dd>
+                  <dd>{featured.caseStudy.problem[locale]}</dd>
                   <dt>{t.approach}</dt>
-                  <dd>{featured.approach[locale]}</dd>
+                  <dd>{featured.caseStudy.approach[locale]}</dd>
                   <dt>{t.outcome}</dt>
-                  <dd>{featured.outcome[locale]}</dd>
+                  <dd>{featured.caseStudy.outcome[locale]}</dd>
                 </dl>
               ) : (
-                <p className="about-text">{featured.summary[locale]}</p>
+                <p className="feature-summary">{featured.summary[locale]}</p>
               )}
               <Chips items={featured.stack} />
               <ProjectLinks project={featured} t={t} />
