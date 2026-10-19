@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "title": "Ablam Jules Amenoussi — Ingénieur logiciel & data engineer",
+    "description": "Portfolio d'Ablam Jules Amenoussi, ingénieur logiciel et data engineer basé à Lomé : applications web, API REST et pipelines de données."
+  },
+  "nav": {
+    "label": "Navigation principale",
+    "home": "Accueil",
+    "domains": "Domaines",
+    "about": "À propos",
+    "projects": "Projets",
+    "journey": "Parcours",
+    "contact": "Me contacter",
+    "language": "Langue",
+    "menu": "Menu"
+  },
+  "hero": {
+    "seeProjects": "Voir mes projets",
+    "downloadCv": "Télécharger le CV",
+    "plotLabel": "Parcours représenté comme une courbe : mathématiques, puis génie logiciel, puis data engineering",
+    "axisX": "x · parcours →",
+    "axisY": "y · complexité des systèmes"
+  },
+  "domains": {
+    "eyebrow": "Domaines",
+    "heading": { "before": "Ce que je ", "accent": "construis", "after": "" },
+    "allProjects": "Tous les projets",
+    "relatedProjects": "Projets liés",
+    "relatedExperience": "Expériences liées"
+  },
+  "about": {
+    "eyebrow": "À propos",
+    "heading": { "before": "Qui est ", "accent": "Jules", "after": " ?" },
+    "downloadCv": "Télécharger le CV"
+  },
+  "projects": {
+    "eyebrow": "Projets sélectionnés",
+    "heading": { "before": "Des projets, ", "accent": "des preuves", "after": "" },
+    "problem": "Problème",
+    "approach": "Approche",
+    "outcome": "Résultat",
+    "source": "Code source",
+    "live": "Voir le site"
+  },
+  "journey": {
+    "eyebrow": "Parcours",
+    "heading": { "before": "D'où je ", "accent": "viens", "after": "" },
+    "experience": "Expérience",
+    "education": "Formation & certifications"
+  },
+  "tools": {
+    "eyebrow": "Outils",
+    "heading": { "before": "Ma ", "accent": "boîte à outils", "after": "" }
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "heading": { "before": "Parlons de votre ", "accent": "projet", "after": "." },
+    "body": "Stage, collaboration, programme de master ou mission data : écrivez-moi, en français ou en anglais.",
+    "write": "Écrire un e-mail"
+  },
+  "footer": {
+    "social": "Réseaux",
+    "email": "E-mail"
+  }
+}
