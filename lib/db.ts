@@ -1,5 +1,7 @@
 import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { attachDatabasePool } from "@vercel/functions";
+import { Pool } from "pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
@@ -9,8 +11,11 @@ function createClient() {
   if (!url) throw new Error("DATABASE_URL is not set");
   // Neon's URLs say sslmode=require, which pg 8 treats as verify-full but pg 9
   // will weaken to libpq semantics. Ask for verify-full explicitly.
-  const connectionString = url.replace(/sslmode=require\b/, "sslmode=verify-full");
-  return new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+  const pool = new Pool({ connectionString: url.replace(/sslmode=require\b/, "sslmode=verify-full") });
+  // On Vercel Fluid compute, closes idle connections before the instance is
+  // suspended (Neon's recommendation). A no-op everywhere else.
+  attachDatabasePool(pool);
+  return new PrismaClient({ adapter: new PrismaPg(pool) });
 }
 
 /** One client per process; reused across hot reloads in development. */
