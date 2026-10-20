@@ -43,6 +43,8 @@ export type Domain = {
 
 /* View models below are built from database rows in `lib/content/index.ts`. */
 
+export type ProjectCategory = { slug: string; name: Localized; position: number };
+
 export type Project = {
   slug: string;
   title: Localized;
@@ -56,6 +58,7 @@ export type Project = {
   repoUrl?: string;
   liveUrl?: string;
   featured: boolean;
+  categories: ProjectCategory[];
 };
 
 export type TimelineEntry = {
@@ -68,3 +71,14 @@ export type TimelineEntry = {
 
 /** A toolbox entry; `icon` is a simple-icons slug. */
 export type Tool = { name: string; icon: string };
+
+export type Certificate = {
+  id: string;
+  title: Localized;
+  issuer: string;
+  /** ISO date; only the month and year are shown. */
+  issuedAt: string;
+  fileUrl?: string;
+  fileIsPdf: boolean;
+  credentialUrl?: string;
+};

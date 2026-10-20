@@ -16,14 +16,15 @@ const BUCKET = "portfolio-images";
 
 export const MAX_IMAGE_BYTES = 3.5 * 1024 * 1024;
 
-const EXTENSIONS: Record<string, string> = {
+const IMAGE_EXTENSIONS: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
   "image/avif": "avif",
 };
 
-export const ACCEPTED_IMAGE_TYPES = Object.keys(EXTENSIONS);
+/** Certificates may also be PDFs. */
+const DOCUMENT_EXTENSIONS: Record<string, string> = { ...IMAGE_EXTENSIONS, "application/pdf": "pdf" };
 
 /** Thrown when the STORAGE_* variables are missing in this environment. */
 export class StorageNotConfiguredError extends Error {}
@@ -50,18 +51,25 @@ function storage() {
   return { client, publicBase: `${endpoint}/${BUCKET}/` };
 }
 
-/** Returns an error message for an unusable file, or null when it can be uploaded. */
+/** Returns an error message for an unusable image, or null when it can be uploaded. */
 export function checkImage(file: File): string | null {
-  if (!EXTENSIONS[file.type]) return "Format accepté : JPEG, PNG, WebP ou AVIF";
+  if (!IMAGE_EXTENSIONS[file.type]) return "Format accepté : JPEG, PNG, WebP ou AVIF";
   if (file.size > MAX_IMAGE_BYTES) return "Image trop lourde : 3,5 Mo maximum";
   return null;
 }
 
-/** Uploads a checked image under `<folder>/` (e.g. "projects/my-slug") and returns its public URL. */
-export async function uploadImage(file: File, folder: string): Promise<string> {
+/** Same as checkImage, but PDFs are accepted too (certificates). */
+export function checkDocument(file: File): string | null {
+  if (!DOCUMENT_EXTENSIONS[file.type]) return "Format accepté : PDF, JPEG, PNG, WebP ou AVIF";
+  if (file.size > MAX_IMAGE_BYTES) return "Fichier trop lourd : 3,5 Mo maximum";
+  return null;
+}
+
+/** Uploads a checked file under `<folder>/` (e.g. "projects/my-slug") and returns its public URL. */
+export async function uploadFile(file: File, folder: string): Promise<string> {
   const { client, publicBase } = storage();
   // A new key per upload: CDN and browser caches can then keep each file forever.
-  const key = `${folder}/${randomUUID()}.${EXTENSIONS[file.type]}`;
+  const key = `${folder}/${randomUUID()}.${DOCUMENT_EXTENSIONS[file.type]}`;
   await client.send(
     new PutObjectCommand({
       Bucket: BUCKET,
@@ -77,14 +85,14 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
 export type UploadFailure = { error: string; reason: "config" | "failed" };
 
 export const UPLOAD_ERRORS: Record<UploadFailure["reason"], string> = {
-  config: "Le stockage d'images n'est pas configuré sur le serveur (variables STORAGE_* manquantes).",
-  failed: "L'envoi de l'image a échoué. Réessayez dans un instant.",
+  config: "Le stockage de fichiers n'est pas configuré sur le serveur (variables STORAGE_* manquantes).",
+  failed: "L'envoi du fichier a échoué. Réessayez dans un instant.",
 };
 
-/** Like uploadImage, but returns a message for the admin form instead of throwing. */
-export async function tryUploadImage(file: File, folder: string): Promise<{ url: string } | UploadFailure> {
+/** Like uploadFile, but returns a message for the admin form instead of throwing. */
+export async function tryUploadFile(file: File, folder: string): Promise<{ url: string } | UploadFailure> {
   try {
-    return { url: await uploadImage(file, folder) };
+    return { url: await uploadFile(file, folder) };
   } catch (error) {
     console.error("Image upload failed", error);
     const reason = error instanceof StorageNotConfiguredError ? "config" : "failed";
@@ -92,8 +100,8 @@ export async function tryUploadImage(file: File, folder: string): Promise<{ url:
   }
 }
 
-/** Deletes an image previously uploaded here; ignores other URLs and failures. */
-export async function deleteStoredImage(url: string | null | undefined): Promise<void> {
+/** Deletes a file previously uploaded here; ignores other URLs and failures. */
+export async function deleteStoredFile(url: string | null | undefined): Promise<void> {
   if (!url) return;
   try {
     const { client, publicBase } = storage();

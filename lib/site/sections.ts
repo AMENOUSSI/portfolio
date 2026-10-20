@@ -70,6 +70,7 @@ export const sectionSchemas = {
     projects: heading,
     journey: heading.extend({ experience: localized, education: localized }),
     tools: heading,
+    certificates: heading,
     contact: heading.extend({ body: localizedOptional }),
   }),
 };
@@ -197,6 +198,10 @@ export const DEFAULTS: SiteContent = {
       eyebrow: { fr: "Outils", en: "Tools" },
       heading: { fr: "Ma *boîte à outils*", en: "My *toolbox*" },
     },
+    certificates: {
+      eyebrow: { fr: "Certifications", en: "Certifications" },
+      heading: { fr: "Des acquis *certifiés*", en: "Skills, *certified*" },
+    },
     contact: {
       eyebrow: { fr: "Contact", en: "Contact" },
       heading: { fr: "Parlons de votre *projet*.", en: "Let's talk about your *project*." },
@@ -246,4 +251,17 @@ export function sectionHead(
   locale: "fr" | "en",
 ): SectionHead {
   return { eyebrow: head.eyebrow[locale], heading: splitHeading(head.heading[locale]) };
+}
+
+/**
+ * Fills fields missing from a stored section with their defaults, so a field
+ * added to a schema later does not invalidate sections saved before it.
+ * Arrays are taken as stored (their length is part of the schema).
+ */
+export function withDefaults(defaults: unknown, stored: unknown): unknown {
+  if (Array.isArray(defaults) || typeof defaults !== "object" || defaults === null) return stored ?? defaults;
+  if (typeof stored !== "object" || stored === null || Array.isArray(stored)) return defaults;
+  const merged: Record<string, unknown> = { ...(stored as Record<string, unknown>) };
+  for (const [key, value] of Object.entries(defaults)) merged[key] = withDefaults(value, merged[key]);
+  return merged;
 }

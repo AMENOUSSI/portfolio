@@ -3,11 +3,13 @@ import Link from "next/link";
 import { createProject } from "../../../actions/projects";
 import { ProjectForm } from "@/components/admin/project-form";
 import { requireAdmin } from "@/lib/auth/dal";
+import { db } from "@/lib/db";
 
 export const metadata: Metadata = { title: "Nouveau projet" };
 
 export default async function NewProject() {
   await requireAdmin();
+  const categories = await db.projectCategory.findMany({ orderBy: [{ position: "asc" }, { nameFr: "asc" }] });
   return (
     <>
       <Link className="a-back" href="/admin/projets">
@@ -16,7 +18,7 @@ export default async function NewProject() {
       <div className="a-head">
         <h1>Nouveau projet</h1>
       </div>
-      <ProjectForm action={createProject} />
+      <ProjectForm action={createProject} categories={categories} />
     </>
   );
 }

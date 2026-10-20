@@ -1,16 +1,17 @@
 "use client";
 
 import { useActionState } from "react";
-import type { Project } from "@/generated/prisma/client";
+import type { Project, ProjectCategory } from "@/generated/prisma/client";
 import { formKey, initialFormState, type FormState } from "@/lib/admin/form-state";
-import { CheckboxField, FormMessage, ImageField, SubmitButton, TextField } from "./fields";
+import { CheckboxField, CheckboxGroup, FormMessage, ImageField, SubmitButton, TextField } from "./fields";
 
 type Props = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
-  project?: Project;
+  project?: Project & { categories: ProjectCategory[] };
+  categories: ProjectCategory[];
 };
 
-export function ProjectForm({ action, project }: Props) {
+export function ProjectForm({ action, project, categories }: Props) {
   const [state, formAction] = useActionState(action, initialFormState);
   const p = project;
 
@@ -35,6 +36,14 @@ export function ProjectForm({ action, project }: Props) {
           <TextField name="summaryFr" label="Résumé (FR)" multiline state={state} initial={p?.summaryFr} required />
           <TextField name="summaryEn" label="Résumé (EN)" multiline state={state} initial={p?.summaryEn} required />
         </div>
+        <CheckboxGroup
+          name="categoryIds"
+          legend="Catégories"
+          hint={categories.length ? "Boutons de filtre au-dessus des projets ; plusieurs choix possibles." : "Aucune catégorie : créez-en dans « Catégories »."}
+          options={categories.map((c) => ({ value: c.id, label: c.nameFr }))}
+          state={state}
+          initial={p?.categories.map((c) => c.id) ?? []}
+        />
         <TextField
           name="stack"
           label="Technologies"

@@ -8,11 +8,11 @@ import { contentTags } from "@/lib/content";
 import { db } from "@/lib/db";
 import { formValues, isUniqueViolation, type FormState } from "@/lib/admin/form-state";
 import { projectSchema, slugify } from "@/lib/admin/schemas";
-import { checkImage, deleteStoredImage, tryUploadImage } from "@/lib/storage";
+import { checkImage, deleteStoredFile, tryUploadFile } from "@/lib/storage";
 
 type Prepared =
   | { ok: false; state: FormState }
-  | { ok: true; values: Record<string, string>; data: z.infer<typeof projectSchema>; upload: File | null };
+  | { ok: true; values: Record<string, string>; data: z.infer<typeof projectSchema>; upload: File | null; categoryIds: string[] };
 
 /** Uploads the chosen file, or keeps the URL typed in the form; a failure becomes a form error. */
 async function resolveImage(
@@ -21,7 +21,7 @@ async function resolveImage(
   values: Record<string, string>,
 ): Promise<{ imageUrl: string } | { state: FormState }> {
   if (!upload) return { imageUrl: data.imageUrl! };
-  const result = await tryUploadImage(upload, `projects/${data.slug}`);
+  const result = await tryUploadFile(upload, `projects/${data.slug}`);
   if ("url" in result) return { imageUrl: result.url };
   return { state: { message: result.error, errors: { imageFile: [result.error] }, values } };
 }
@@ -29,6 +29,9 @@ async function resolveImage(
 /** Validates the form; the image comes either from an uploaded file or the imageUrl field. */
 function prepare(formData: FormData): Prepared {
   const values = formValues(formData);
+  // Checkbox group: several values under one name; kept as a list in `values` for redisplay.
+  const categoryIds = formData.getAll("categoryIds").filter((v): v is string => typeof v === "string");
+  values.categoryIds = categoryIds.join(",");
   if (!values.slug?.trim()) values.slug = slugify(values.titleEn || values.titleFr || "");
 
   const result = projectSchema.safeParse(values);
@@ -49,7 +52,7 @@ function prepare(formData: FormData): Prepared {
       : "Certains champs sont à corriger.";
     return { ok: false, state: { message, errors, values } };
   }
-  return { ok: true, values, data: result.data, upload };
+  return { ok: true, values, data: result.data, upload, categoryIds };
 }
 
 const slugTaken: FormState["errors"] = { slug: ["Ce slug est déjà utilisé par un autre projet"] };
@@ -58,15 +61,17 @@ export async function createProject(_state: FormState, formData: FormData): Prom
   await requireAdmin();
   const prepared = prepare(formData);
   if (!prepared.ok) return prepared.state;
-  const { values, data, upload } = prepared;
+  const { values, data, upload, categoryIds } = prepared;
 
   const image = await resolveImage(upload, data, values);
   if ("state" in image) return image.state;
   const { imageUrl } = image;
   try {
-    await db.project.create({ data: { ...data, imageUrl } });
+    await db.project.create({
+      data: { ...data, imageUrl, categories: { connect: categoryIds.map((id) => ({ id })) } },
+    });
   } catch (error) {
-    if (upload) await deleteStoredImage(imageUrl);
+    if (upload) await deleteStoredFile(imageUrl);
     if (isUniqueViolation(error)) return { errors: slugTaken, values };
     throw error;
   }
@@ -78,21 +83,24 @@ export async function updateProject(id: string, _state: FormState, formData: For
   await requireAdmin();
   const prepared = prepare(formData);
   if (!prepared.ok) return prepared.state;
-  const { values, data, upload } = prepared;
+  const { values, data, upload, categoryIds } = prepared;
 
   const previous = await db.project.findUnique({ where: { id }, select: { imageUrl: true } });
   const image = await resolveImage(upload, data, values);
   if ("state" in image) return image.state;
   const { imageUrl } = image;
   try {
-    await db.project.update({ where: { id }, data: { ...data, imageUrl } });
+    await db.project.update({
+      where: { id },
+      data: { ...data, imageUrl, categories: { set: categoryIds.map((categoryId) => ({ id: categoryId })) } },
+    });
   } catch (error) {
-    if (upload) await deleteStoredImage(imageUrl);
+    if (upload) await deleteStoredFile(imageUrl);
     if (isUniqueViolation(error)) return { errors: slugTaken, values };
     throw error;
   }
   // The old file is no longer referenced once the row points at the new one.
-  if (previous && previous.imageUrl !== imageUrl) await deleteStoredImage(previous.imageUrl);
+  if (previous && previous.imageUrl !== imageUrl) await deleteStoredFile(previous.imageUrl);
   refreshContent(contentTags.projects);
   redirect("/admin/projets");
 }
@@ -100,7 +108,7 @@ export async function updateProject(id: string, _state: FormState, formData: For
 export async function deleteProject(id: string) {
   await requireAdmin();
   const deleted = await db.project.delete({ where: { id } });
-  await deleteStoredImage(deleted.imageUrl);
+  await deleteStoredFile(deleted.imageUrl);
   refreshContent(contentTags.projects);
   redirect("/admin/projets");
 }

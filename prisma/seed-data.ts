@@ -167,3 +167,17 @@ export const experiences: Prisma.ExperienceCreateInput[] = [
     organizationEn: "University of Lomé",
   },
 ];
+
+export const categories: Prisma.ProjectCategoryCreateInput[] = [
+  { slug: "web-mobile", nameFr: "Web & mobile", nameEn: "Web & mobile", position: 1 },
+  { slug: "data", nameFr: "Data", nameEn: "Data", position: 2 },
+  { slug: "ia", nameFr: "IA", nameEn: "AI", position: 3 },
+  { slug: "formation", nameFr: "Formation", nameEn: "Teaching", position: 4 },
+];
+
+/** Initial category of each seeded project (slug → category slugs). */
+export const projectCategories: Record<string, string[]> = {
+  "xof-exchange-pipeline": ["data"],
+  lomedigital: ["web-mobile"],
+  "mawuto-shop-dashboard": ["web-mobile", "data"],
+};

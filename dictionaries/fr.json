@@ -35,7 +35,10 @@
     "outcome": "Résultat",
     "source": "Code source",
     "live": "Voir le site",
-    "caseStudy": "Étude de cas"
+    "caseStudy": "Étude de cas",
+    "filterAll": "Tous",
+    "filterLabel": "Filtrer les projets par domaine",
+    "filterResult": "{count} projet(s) affiché(s)"
   },
   "contact": {
     "write": "Écrire un e-mail"
@@ -76,5 +79,10 @@
     "title": "Page introuvable",
     "body": "Cette page n’existe pas ou a été déplacée.",
     "home": "Retour à l’accueil"
+  },
+  "certificates": {
+    "view": "Voir le certificat",
+    "viewPdf": "Voir le certificat (PDF)",
+    "verify": "Vérifier en ligne"
   }
 }

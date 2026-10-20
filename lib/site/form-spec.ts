@@ -162,7 +162,7 @@ export const sectionSpecs: Record<SectionKey, SectionSpec> = {
 
   sections: {
     title: "Titres des autres sections",
-    description: "Projets, Parcours, Boîte à outils et Contact.",
+    description: "Projets, Parcours, Boîte à outils, Certifications et Contact.",
     groups: [
       { title: "Projets", fields: headingFields("projects.") },
       {
@@ -174,6 +174,7 @@ export const sectionSpecs: Record<SectionKey, SectionSpec> = {
         ],
       },
       { title: "Boîte à outils", fields: headingFields("tools.") },
+      { title: "Certifications", fields: headingFields("certificates.") },
       {
         title: "Contact",
         fields: [

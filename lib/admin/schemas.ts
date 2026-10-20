@@ -91,6 +91,30 @@ export const skillSchema = z
     message: "Une icône est nécessaire pour apparaître dans la boîte à outils",
   });
 
+export const categorySchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lettres minuscules, chiffres et tirets uniquement"),
+  nameFr: required,
+  nameEn: required,
+  position,
+});
+
+export const certificateSchema = z.object({
+  titleFr: required,
+  titleEn: required,
+  issuer: required,
+  issuedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Mois d'obtention requis")
+    .transform((v) => new Date(`${v}-01T00:00:00Z`)),
+  credentialUrl: optionalUrl,
+  published: checkbox,
+  position,
+});
+
 export const experienceSchema = z.object({
   kind: z.enum(["EXPERIENCE", "EDUCATION"], "Type inconnu"),
   titleFr: required,

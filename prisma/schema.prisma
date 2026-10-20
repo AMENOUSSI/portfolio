@@ -40,6 +40,37 @@ model Project {
   position   Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  /// Filter buttons above the projects ("Web & mobile", "Data"…); a project can be in several.
+  categories ProjectCategory[]
+
+  @@index([published, position])
+}
+
+model ProjectCategory {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  nameFr    String
+  nameEn    String
+  position  Int       @default(0)
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Certificate {
+  id            String   @id @default(cuid())
+  titleFr       String
+  titleEn       String
+  issuer        String
+  issuedAt      DateTime
+  /// Uploaded image or PDF of the certificate, in the storage bucket.
+  fileUrl       String?
+  /// Online verification page given by the issuer, if any.
+  credentialUrl String?
+  published     Boolean  @default(true)
+  position      Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([published, position])
 }

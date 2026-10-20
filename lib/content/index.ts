@@ -1,9 +1,14 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/lib/db";
-import type { Project as ProjectRow, Experience as ExperienceRow } from "@/generated/prisma/client";
-import { DEFAULTS, isSectionKey, sectionSchemas, type SiteContent } from "@/lib/site/sections";
-import type { Localized, Profile, Project, TimelineEntry, Tool } from "./types";
+import type {
+  Certificate as CertificateRow,
+  Experience as ExperienceRow,
+  Project as ProjectRow,
+  ProjectCategory as CategoryRow,
+} from "@/generated/prisma/client";
+import { DEFAULTS, isSectionKey, sectionSchemas, withDefaults, type SiteContent } from "@/lib/site/sections";
+import type { Certificate, Localized, Profile, Project, ProjectCategory, TimelineEntry, Tool } from "./types";
 
 export type * from "./types";
 
@@ -13,6 +18,7 @@ export const contentTags = {
   skills: "skills",
   experiences: "experiences",
   site: "site",
+  certificates: "certificates",
 } as const;
 
 /**
@@ -27,7 +33,7 @@ export async function getSite(): Promise<SiteContent> {
   const site = structuredClone(DEFAULTS) as Record<string, unknown>;
   for (const row of rows) {
     if (!isSectionKey(row.key)) continue;
-    const parsed = sectionSchemas[row.key].safeParse(row.data);
+    const parsed = sectionSchemas[row.key].safeParse(withDefaults(DEFAULTS[row.key], row.data));
     if (parsed.success) site[row.key] = parsed.data;
   }
   return site as SiteContent;
@@ -63,7 +69,11 @@ function optionalPair(fr: string | null, en: string | null): Localized | undefin
   return fr && en ? { fr, en } : undefined;
 }
 
-function toProject(row: ProjectRow): Project {
+function toCategory(row: CategoryRow): ProjectCategory {
+  return { slug: row.slug, name: pair(row.nameFr, row.nameEn), position: row.position };
+}
+
+function toProject(row: ProjectRow & { categories: CategoryRow[] }): Project {
   const problem = optionalPair(row.problemFr, row.problemEn);
   const approach = optionalPair(row.approachFr, row.approachEn);
   const outcome = optionalPair(row.outcomeFr, row.outcomeEn);
@@ -79,6 +89,7 @@ function toProject(row: ProjectRow): Project {
     repoUrl: row.repoUrl ?? undefined,
     liveUrl: row.liveUrl ?? undefined,
     featured: row.featured,
+    categories: [...row.categories].sort((x, y) => x.position - y.position).map(toCategory),
   };
 }
 
@@ -98,6 +109,7 @@ async function getPublishedProjects(): Promise<Project[]> {
   cacheLife("max");
   const rows = await db.project.findMany({
     where: { published: true },
+    include: { categories: true },
     orderBy: [{ position: "asc" }, { createdAt: "asc" }],
   });
   return rows.map(toProject);
@@ -129,11 +141,12 @@ async function getToolbox(): Promise<Tool[]> {
 }
 
 export async function getHomeContent() {
-  const [site, projects, timeline, tools] = await Promise.all([
+  const [site, projects, timeline, tools, certificates] = await Promise.all([
     getSite(),
     getPublishedProjects(),
     getTimeline(),
     getToolbox(),
+    getCertificates(),
   ]);
   // Only the first featured project gets the large card; any others join the grid.
   const featuredProject = projects.find((p) => p.featured);
@@ -145,6 +158,8 @@ export async function getHomeContent() {
     domains: site.domains.cards,
     featuredProject,
     otherProjects: projects.filter((p) => p !== featuredProject),
+    projectCategories: usedCategories(projects),
+    certificates,
     experience: timeline.experience,
     education: timeline.education,
     tools,
@@ -192,4 +207,34 @@ export async function getProjectPage(slug: string) {
     previous: index > 0 ? projects[index - 1] : undefined,
     next: index < projects.length - 1 ? projects[index + 1] : undefined,
   };
+}
+
+/** Categories used by at least one published project, in button order. */
+export function usedCategories(projects: Project[]): ProjectCategory[] {
+  const seen = new Map<string, ProjectCategory>();
+  for (const project of projects) for (const category of project.categories) seen.set(category.slug, category);
+  return [...seen.values()].sort((x, y) => x.position - y.position);
+}
+
+function toCertificate(row: CertificateRow): Certificate {
+  return {
+    id: row.id,
+    title: pair(row.titleFr, row.titleEn),
+    issuer: row.issuer,
+    issuedAt: row.issuedAt.toISOString(),
+    fileUrl: row.fileUrl ?? undefined,
+    fileIsPdf: Boolean(row.fileUrl?.toLowerCase().endsWith(".pdf")),
+    credentialUrl: row.credentialUrl ?? undefined,
+  };
+}
+
+export async function getCertificates(): Promise<Certificate[]> {
+  "use cache";
+  cacheTag(contentTags.certificates);
+  cacheLife("max");
+  const rows = await db.certificate.findMany({
+    where: { published: true },
+    orderBy: [{ position: "asc" }, { issuedAt: "desc" }],
+  });
+  return rows.map(toCertificate);
 }

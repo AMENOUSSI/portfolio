@@ -1,6 +1,7 @@
 import { locale as rootLocale } from "next/root-params";
 import { notFound } from "next/navigation";
 import { About } from "@/components/about";
+import { Certificates } from "@/components/certificates";
 import { Contact } from "@/components/contact";
 import { Domains } from "@/components/domains";
 import { FocusBand } from "@/components/focus-band";
@@ -37,6 +38,7 @@ export default async function HomePage() {
           head={sectionHead(site.sections.projects, locale)}
           featured={content.featuredProject}
           others={content.otherProjects}
+          categories={content.projectCategories}
         />
         <Journey
           locale={locale}
@@ -44,6 +46,12 @@ export default async function HomePage() {
           labels={{ experience: journey.experience[locale], education: journey.education[locale] }}
           experience={content.experience}
           education={content.education}
+        />
+        <Certificates
+          locale={locale}
+          t={t.certificates}
+          head={sectionHead(site.sections.certificates, locale)}
+          certificates={content.certificates}
         />
         <Toolbox head={sectionHead(site.sections.tools, locale)} tools={content.tools} />
         <Contact

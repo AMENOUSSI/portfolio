@@ -420,3 +420,14 @@
 .a-card-wide {
   margin-top: 18px;
 }
+.field-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.a-file-link {
+  font-weight: 600;
+  border-bottom: 2px solid var(--ambre);
+}
+.a-danger-zone + .a-danger-zone {
+  margin-top: 12px;
+}

@@ -92,6 +92,77 @@ export function CheckboxField({ name, label, state, initial }: { name: string; l
   );
 }
 
+/** File picker for a document (PDF or image), with a link to the current file. */
+export function DocumentField({
+  name,
+  label,
+  hint,
+  state,
+  currentUrl,
+  accept,
+}: {
+  name: string;
+  label: string;
+  hint: string;
+  state: FormState;
+  currentUrl?: string | null;
+  accept: string;
+}) {
+  const error = state.errors?.[name]?.[0];
+  return (
+    <FieldShell name={name} label={label} hint={hint} error={error}>
+      <div className="image-field">
+        {currentUrl && (
+          <a className="a-file-link" href={currentUrl} target="_blank" rel="noreferrer">
+            Voir le fichier actuel ↗
+          </a>
+        )}
+        <input
+          id={name}
+          name={name}
+          type="file"
+          accept={accept}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${name}-error` : `${name}-hint`}
+        />
+      </div>
+    </FieldShell>
+  );
+}
+
+/** Several checkboxes sharing one name; submitted values are kept comma-joined in state.values. */
+export function CheckboxGroup({
+  name,
+  legend,
+  hint,
+  options,
+  state,
+  initial,
+}: {
+  name: string;
+  legend: string;
+  hint?: string;
+  options: { value: string; label: string }[];
+  state: FormState;
+  initial: string[];
+}) {
+  const selected = state.values ? (state.values[name] ?? "").split(",").filter(Boolean) : initial;
+  return (
+    <div className="field">
+      <span className="field-label">{legend}</span>
+      <div className="checks" role="group" aria-label={legend}>
+        {options.map((o) => (
+          <label className="check" key={o.value}>
+            <input type="checkbox" name={name} value={o.value} defaultChecked={selected.includes(o.value)} />
+            {o.label}
+          </label>
+        ))}
+      </div>
+      {hint && <p className="field-hint">{hint}</p>}
+    </div>
+  );
+}
+
 export function FormMessage({ state }: { state: FormState }) {
   if (!state.message) return null;
   return (

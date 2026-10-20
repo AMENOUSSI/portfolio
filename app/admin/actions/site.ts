@@ -9,7 +9,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { formValues, type FormState } from "@/lib/admin/form-state";
 import { fieldPaths, sectionSpecs, type FieldSpec } from "@/lib/site/form-spec";
 import { DEFAULTS, getAt, sectionSchemas, setAt, type SectionKey } from "@/lib/site/sections";
-import { checkImage, deleteStoredImage, tryUploadImage, type UploadFailure } from "@/lib/storage";
+import { checkImage, deleteStoredFile, tryUploadFile, type UploadFailure } from "@/lib/storage";
 
 /** Turns one form value into what the section schema expects for that kind of field. */
 function convert(kind: FieldSpec["kind"], raw: string): unknown {
@@ -66,7 +66,7 @@ export async function saveSection(key: SectionKey, _state: FormState, formData: 
   // A failed upload must not lose the texts: keep the image that was there and warn.
   let imageFailed: UploadFailure["reason"] | null = null;
   for (const { path, file } of uploads) {
-    const upload = await tryUploadImage(file, `site/${key}`);
+    const upload = await tryUploadFile(file, `site/${key}`);
     if ("url" in upload) {
       setAt(saved, `${path}.src`, upload.url);
     } else {
@@ -82,7 +82,7 @@ export async function saveSection(key: SectionKey, _state: FormState, formData: 
   // Remove uploaded images that this save replaced.
   for (const field of fields.filter((f) => f.kind === "image")) {
     const before = getAt(previous?.data, `${field.path}.src`);
-    if (typeof before === "string" && before !== getAt(saved, `${field.path}.src`)) await deleteStoredImage(before);
+    if (typeof before === "string" && before !== getAt(saved, `${field.path}.src`)) await deleteStoredFile(before);
   }
 
   refreshContent(contentTags.site);

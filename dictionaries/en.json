@@ -35,7 +35,10 @@
     "outcome": "Outcome",
     "source": "Source code",
     "live": "Visit the site",
-    "caseStudy": "Case study"
+    "caseStudy": "Case study",
+    "filterAll": "All",
+    "filterLabel": "Filter projects by area",
+    "filterResult": "{count} project(s) shown"
   },
   "contact": {
     "write": "Send an email"
@@ -76,5 +79,10 @@
     "title": "Page not found",
     "body": "This page doesn’t exist or has moved.",
     "home": "Back to the home page"
+  },
+  "certificates": {
+    "view": "View certificate",
+    "viewPdf": "View certificate (PDF)",
+    "verify": "Verify online"
   }
 }

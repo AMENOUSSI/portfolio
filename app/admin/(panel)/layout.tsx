@@ -5,8 +5,10 @@ import { requireAdmin } from "@/lib/auth/dal";
 const links = [
   { href: "/admin", label: "Tableau de bord" },
   { href: "/admin/projets", label: "Projets" },
+  { href: "/admin/categories", label: "Catégories" },
   { href: "/admin/competences", label: "Compétences" },
   { href: "/admin/experiences", label: "Parcours" },
+  { href: "/admin/certificats", label: "Certificats" },
   { href: "/admin/site", label: "Textes du site" },
 ];
 

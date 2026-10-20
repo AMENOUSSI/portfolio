@@ -12,7 +12,10 @@ export const metadata: Metadata = { title: "Modifier le projet" };
 export default async function EditProject({ params }: PageProps<"/admin/projets/[id]">) {
   await requireAdmin();
   const { id } = await params;
-  const project = await db.project.findUnique({ where: { id } });
+  const [project, categories] = await Promise.all([
+    db.project.findUnique({ where: { id }, include: { categories: true } }),
+    db.projectCategory.findMany({ orderBy: [{ position: "asc" }, { nameFr: "asc" }] }),
+  ]);
   if (!project) notFound();
 
   return (
@@ -23,7 +26,7 @@ export default async function EditProject({ params }: PageProps<"/admin/projets/
       <div className="a-head">
         <h1>{project.titleFr}</h1>
       </div>
-      <ProjectForm action={updateProject.bind(null, project.id)} project={project} />
+      <ProjectForm action={updateProject.bind(null, project.id)} project={project} categories={categories} />
       <div className="a-danger-zone">
         <p>Supprimer ce projet le retire définitivement du site.</p>
         <DeleteButton action={deleteProject.bind(null, project.id)} what="ce projet" />
