@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth/dal";
 import { db } from "@/lib/db";
 import { sectionSpecs } from "@/lib/site/form-spec";
 import { isSectionKey, sectionKeys } from "@/lib/site/sections";
+import { UPLOAD_ERRORS } from "@/lib/storage";
 
 export const metadata: Metadata = { title: "Textes du site" };
 
@@ -11,7 +12,7 @@ const dateFormat = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeS
 
 export default async function SiteTextsAdmin({ searchParams }: PageProps<"/admin/site">) {
   await requireAdmin();
-  const [{ saved }, rows] = await Promise.all([
+  const [{ saved, imageError }, rows] = await Promise.all([
     searchParams,
     db.siteSection.findMany({ select: { key: true, updatedAt: true } }),
   ]);
@@ -29,6 +30,12 @@ export default async function SiteTextsAdmin({ searchParams }: PageProps<"/admin
       {savedKey && (
         <p className="form-message is-success" role="status">
           « {sectionSpecs[savedKey].title} » est enregistré et en ligne.
+        </p>
+      )}
+      {savedKey && (imageError === "config" || imageError === "failed") && (
+        <p className="form-message" role="alert">
+          Les textes sont enregistrés, mais pas la nouvelle image : {UPLOAD_ERRORS[imageError]} L&apos;image
+          précédente est conservée.
         </p>
       )}
       <div className="a-table-wrap">

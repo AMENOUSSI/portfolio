@@ -25,9 +25,12 @@ const EXTENSIONS: Record<string, string> = {
 
 export const ACCEPTED_IMAGE_TYPES = Object.keys(EXTENSIONS);
 
+/** Thrown when the STORAGE_* variables are missing in this environment. */
+export class StorageNotConfiguredError extends Error {}
+
 function setting(name: string, awsName: string): string {
   const value = process.env[`STORAGE_${name}`] ?? (process.env.VERCEL ? undefined : process.env[awsName]);
-  if (!value) throw new Error(`STORAGE_${name} is not set`);
+  if (!value) throw new StorageNotConfiguredError(`STORAGE_${name} is not set`);
   return value;
 }
 
@@ -69,6 +72,24 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
     }),
   );
   return publicBase + key;
+}
+
+export type UploadFailure = { error: string; reason: "config" | "failed" };
+
+export const UPLOAD_ERRORS: Record<UploadFailure["reason"], string> = {
+  config: "Le stockage d'images n'est pas configuré sur le serveur (variables STORAGE_* manquantes).",
+  failed: "L'envoi de l'image a échoué. Réessayez dans un instant.",
+};
+
+/** Like uploadImage, but returns a message for the admin form instead of throwing. */
+export async function tryUploadImage(file: File, folder: string): Promise<{ url: string } | UploadFailure> {
+  try {
+    return { url: await uploadImage(file, folder) };
+  } catch (error) {
+    console.error("Image upload failed", error);
+    const reason = error instanceof StorageNotConfiguredError ? "config" : "failed";
+    return { error: UPLOAD_ERRORS[reason], reason };
+  }
 }
 
 /** Deletes an image previously uploaded here; ignores other URLs and failures. */

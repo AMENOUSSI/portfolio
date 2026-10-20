@@ -8,8 +8,8 @@ import { db } from "@/lib/db";
 import type { Prisma } from "@/generated/prisma/client";
 import { formValues, type FormState } from "@/lib/admin/form-state";
 import { fieldPaths, sectionSpecs, type FieldSpec } from "@/lib/site/form-spec";
-import { getAt, sectionSchemas, setAt, type SectionKey } from "@/lib/site/sections";
-import { checkImage, deleteStoredImage, uploadImage } from "@/lib/storage";
+import { DEFAULTS, getAt, sectionSchemas, setAt, type SectionKey } from "@/lib/site/sections";
+import { checkImage, deleteStoredImage, tryUploadImage, type UploadFailure } from "@/lib/storage";
 
 /** Turns one form value into what the section schema expects for that kind of field. */
 function convert(kind: FieldSpec["kind"], raw: string): unknown {
@@ -61,9 +61,21 @@ export async function saveSection(key: SectionKey, _state: FormState, formData: 
   }
 
   const saved = result.data as Record<string, unknown>;
-  for (const { path, file } of uploads) setAt(saved, `${path}.src`, await uploadImage(file, `site/${key}`));
-
   const previous = await db.siteSection.findUnique({ where: { key } });
+
+  // A failed upload must not lose the texts: keep the image that was there and warn.
+  let imageFailed: UploadFailure["reason"] | null = null;
+  for (const { path, file } of uploads) {
+    const upload = await tryUploadImage(file, `site/${key}`);
+    if ("url" in upload) {
+      setAt(saved, `${path}.src`, upload.url);
+    } else {
+      imageFailed = upload.reason;
+      const current = getAt(previous?.data, `${path}.src`) ?? getAt(DEFAULTS[key], `${path}.src`);
+      setAt(saved, `${path}.src`, current);
+    }
+  }
+
   const json = saved as Prisma.InputJsonValue;
   await db.siteSection.upsert({ where: { key }, create: { key, data: json }, update: { data: json } });
 
@@ -74,5 +86,5 @@ export async function saveSection(key: SectionKey, _state: FormState, formData: 
   }
 
   refreshContent(contentTags.site);
-  redirect(`/admin/site?saved=${key}`);
+  redirect(`/admin/site?saved=${key}${imageFailed ? `&imageError=${imageFailed}` : ""}`);
 }
