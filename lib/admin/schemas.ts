@@ -54,8 +54,9 @@ export const projectSchema = z.object({
         .map((s) => s.trim())
         .filter(Boolean),
     ),
-  imageUrl: required.refine(
-    (v) => v.startsWith("/") || /^https:\/\/\S+$/.test(v),
+  // Optional here: the action requires either this or an uploaded file.
+  imageUrl: optional.refine(
+    (v) => v === null || v.startsWith("/") || /^https:\/\/\S+$/.test(v),
     "Chemin commençant par / ou adresse https",
   ),
   imageAltFr: required,

@@ -283,6 +283,30 @@
 .field-error {
   color: #b42318;
 }
+.image-field {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.image-preview {
+  position: relative;
+  width: 200px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--trait);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--papier);
+}
+.image-preview img {
+  object-fit: cover;
+  object-position: top;
+}
+.field input[type="file"] {
+  width: auto;
+  border-style: dashed;
+  cursor: pointer;
+}
 .checks {
   display: flex;
   flex-wrap: wrap;

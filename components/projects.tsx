@@ -1,7 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Dictionary } from "@/lib/dictionary";
 import type { Project } from "@/lib/content";
-import type { Locale } from "@/lib/i18n";
+import { localizedPath, type Locale } from "@/lib/i18n";
 import { AccentHeading } from "./accent-heading";
 import { Icon } from "./icon";
 
@@ -12,10 +13,13 @@ type Props = {
   others: Project[];
 };
 
-function ProjectLinks({ project, t }: { project: Project; t: Dictionary["projects"] }) {
-  if (!project.repoUrl && !project.liveUrl) return null;
+function ProjectLinks({ project, t, locale }: { project: Project; t: Dictionary["projects"]; locale: Locale }) {
   return (
     <div className="links">
+      <Link href={localizedPath(locale, `/projets/${project.slug}`)}>
+        <Icon name="arrow" />
+        {t.caseStudy}
+      </Link>
       {project.repoUrl && (
         <a href={project.repoUrl}>
           <Icon name="source" />
@@ -82,7 +86,7 @@ export function Projects({ locale, t, featured, others }: Props) {
                 <p className="feature-summary">{featured.summary[locale]}</p>
               )}
               <Chips items={featured.stack} />
-              <ProjectLinks project={featured} t={t} />
+              <ProjectLinks project={featured} t={t} locale={locale} />
             </div>
           </article>
         )}
@@ -98,7 +102,7 @@ export function Projects({ locale, t, featured, others }: Props) {
                 <h3>{p.title[locale]}</h3>
                 <p>{p.summary[locale]}</p>
                 <Chips items={p.stack} />
-                <ProjectLinks project={p} t={t} />
+                <ProjectLinks project={p} t={t} locale={locale} />
               </div>
             </article>
           ))}

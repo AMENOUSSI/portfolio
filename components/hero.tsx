@@ -1,6 +1,7 @@
+import Link from "next/link";
 import type { Dictionary } from "@/lib/dictionary";
 import type { HomeContent } from "@/lib/content";
-import type { Locale } from "@/lib/i18n";
+import { localizedPath, type Locale } from "@/lib/i18n";
 import { CareerPlot } from "./career-plot";
 import { Icon } from "./icon";
 
@@ -12,7 +13,6 @@ type Props = {
 };
 
 export function Hero({ locale, t, profile, milestones }: Props) {
-  const cvUrl = profile.cvUrl[locale];
   const githubHandle = profile.github.replace("https://", "");
 
   return (
@@ -34,11 +34,9 @@ export function Hero({ locale, t, profile, milestones }: Props) {
                 <Icon name="arrow" />
               </span>
             </a>
-            {cvUrl && (
-              <a className="btn btn-ghost" href={cvUrl} download>
-                {t.downloadCv}
-              </a>
-            )}
+            <Link className="btn btn-ghost" href={localizedPath(locale, "/cv")}>
+              {t.downloadCv}
+            </Link>
           </div>
           <ul className="facts">
             <li>

@@ -8,11 +8,12 @@ experience. Next.js 16 (App Router, Cache Components), Prisma 7 + PostgreSQL
 
 | Path | Role |
 | --- | --- |
-| `app/[locale]/` | Public site. French at `/`, English at `/en` (see `proxy.ts`). |
+| `app/[locale]/` | Public site. French at `/`, English at `/en` (see `proxy.ts`). Also `/cv` (printable résumé, "Save as PDF") and `/projets/<slug>` (case studies). |
 | `app/admin/` | Admin (`/admin`), French only, protected by a session cookie. |
 | `app/admin/actions/` | Server Actions: every write re-checks the session and refreshes the public cache (`updateTag`). |
 | `lib/content/` | Read access for the public site. `data.ts` holds static profile text; projects, skills and experiences come from the database. |
 | `prisma/` | Schema, migrations and seed (initial content). |
+| `lib/storage.ts` | Project image uploads to Neon Object Storage (bucket declared in `neon.ts`). |
 | `dictionaries/` | Interface strings per language. |
 
 ## Local setup
@@ -27,9 +28,14 @@ experience. Next.js 16 (App Router, Cache Components), Prisma 7 + PostgreSQL
 
 ## Production (Neon)
 
-1. Create a Neon project and copy its **pooled** connection string.
-2. Set `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` in the hosting provider.
-3. Apply migrations once with `npm run db:deploy` (with `DATABASE_URL` pointing to Neon), then `npm run db:seed` for the initial content.
+1. Link the Neon project (`neon init`) and run `neon deploy`: it provisions Postgres and the
+   `portfolio-images` bucket, and writes their variables to `.env`.
+2. Set in the hosting provider: `DATABASE_URL`, `SESSION_SECRET`, `ADMIN_EMAIL`,
+   `ADMIN_PASSWORD_HASH`, and for image uploads `STORAGE_ACCESS_KEY_ID`,
+   `STORAGE_SECRET_ACCESS_KEY`, `STORAGE_ENDPOINT`, `STORAGE_REGION` (same values as the
+   local `AWS_*` ones; Vercel reserves the `AWS_*` names).
+3. Apply migrations once with `npm run db:deploy` (it uses the direct `DATABASE_URL_UNPOOLED`),
+   then `npm run db:seed` for the initial content.
 
 ## Scripts
 

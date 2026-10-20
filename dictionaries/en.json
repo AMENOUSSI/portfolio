@@ -16,50 +16,108 @@
   },
   "hero": {
     "seeProjects": "See my projects",
-    "downloadCv": "Download my CV",
+    "downloadCv": "View my CV",
     "plotLabel": "Career drawn as a curve: mathematics, then software engineering, then data engineering",
     "axisX": "x · journey →",
     "axisY": "y · system complexity"
   },
   "domains": {
     "eyebrow": "Focus areas",
-    "heading": { "before": "What I ", "accent": "build", "after": "" },
+    "heading": {
+      "before": "What I ",
+      "accent": "build",
+      "after": ""
+    },
     "allProjects": "All projects",
     "relatedProjects": "Related projects",
     "relatedExperience": "Related experience"
   },
   "about": {
     "eyebrow": "About",
-    "heading": { "before": "Who is ", "accent": "Jules", "after": "?" },
-    "downloadCv": "Download my CV"
+    "heading": {
+      "before": "Who is ",
+      "accent": "Jules",
+      "after": "?"
+    },
+    "downloadCv": "View my CV"
   },
   "projects": {
     "eyebrow": "Selected projects",
-    "heading": { "before": "Projects as ", "accent": "evidence", "after": "" },
+    "heading": {
+      "before": "Projects as ",
+      "accent": "evidence",
+      "after": ""
+    },
     "problem": "Problem",
     "approach": "Approach",
     "outcome": "Outcome",
     "source": "Source code",
-    "live": "Visit the site"
+    "live": "Visit the site",
+    "caseStudy": "Case study"
   },
   "journey": {
     "eyebrow": "Journey",
-    "heading": { "before": "Where I ", "accent": "come from", "after": "" },
+    "heading": {
+      "before": "Where I ",
+      "accent": "come from",
+      "after": ""
+    },
     "experience": "Experience",
     "education": "Education & certifications"
   },
   "tools": {
     "eyebrow": "Tools",
-    "heading": { "before": "My ", "accent": "toolbox", "after": "" }
+    "heading": {
+      "before": "My ",
+      "accent": "toolbox",
+      "after": ""
+    }
   },
   "contact": {
     "eyebrow": "Contact",
-    "heading": { "before": "Let's talk about your ", "accent": "project", "after": "." },
+    "heading": {
+      "before": "Let's talk about your ",
+      "accent": "project",
+      "after": "."
+    },
     "body": "Internship, collaboration, master's programme or data assignment: write to me in English or French.",
     "write": "Send an email"
   },
   "footer": {
     "social": "Social",
     "email": "Email"
+  },
+  "cv": {
+    "title": "Résumé",
+    "back": "Back to portfolio",
+    "download": "Download as PDF",
+    "hint": "In the print dialog, choose “Save as PDF”.",
+    "profile": "Profile",
+    "experience": "Professional experience",
+    "projects": "Projects",
+    "education": "Education & certifications",
+    "skills": "Skills",
+    "languages": "Languages",
+    "links": "Links",
+    "categories": {
+      "LANGUAGE": "Languages",
+      "WEB": "Web",
+      "DATA": "Data",
+      "DATABASE": "Databases",
+      "TOOLING": "Tools",
+      "METHOD": "Methods"
+    }
+  },
+  "projectPage": {
+    "back": "All projects",
+    "stack": "Tech stack",
+    "previous": "Previous project",
+    "next": "Next project",
+    "links": "Links"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page doesn’t exist or has moved.",
+    "home": "Back to the home page"
   }
 }

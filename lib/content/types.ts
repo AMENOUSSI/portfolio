@@ -19,8 +19,8 @@ export type Profile = {
   email: string;
   github: string;
   linkedin: string;
-  /** Path to the CV PDF in `public/`, or null while none is published. */
-  cvUrl: Localized<string | null>;
+  /** Public address of this portfolio, printed on the CV. */
+  website: string;
   portrait: ImageRef;
   aboutPhoto: ImageRef;
   aboutTags: Localized<string[]>;

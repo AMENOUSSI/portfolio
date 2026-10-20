@@ -25,7 +25,7 @@ export const profile: Profile = {
   email: "julesamenoussi4@gmail.com",
   github: "https://github.com/AMENOUSSI",
   linkedin: "https://www.linkedin.com/in/ablam-jules-amenoussi/",
-  cvUrl: { fr: null, en: null },
+  website: "https://portfolio-julesamenoussi.vercel.app",
   portrait: {
     src: "/images/portrait-studio.png",
     width: 1254,

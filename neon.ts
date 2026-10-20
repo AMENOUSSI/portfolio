@@ -3,6 +3,10 @@ import { defineConfig } from "@neon/config/v1";
 export default defineConfig({
   // Declare your Neon services here
   auth: false,
+  buckets: {
+    // Project images uploaded from /admin; read publicly by the site.
+    "portfolio-images": { access: "public_read" },
+  },
   // Branch policy: per-branch tuning
   branch: (branch) => {
     if (branch.isDefault) {

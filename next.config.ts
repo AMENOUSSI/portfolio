@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
     // Only the admin can set these URLs.
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
+  experimental: {
+    serverActions: {
+      // Image uploads from /admin (3.5 MB max) + form fields; Vercel caps bodies at 4.5 MB.
+      bodySizeLimit: "4mb",
+    },
+  },
 };
 
 export default nextConfig;

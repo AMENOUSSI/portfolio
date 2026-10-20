@@ -105,3 +105,39 @@ export async function getHomeContent() {
 }
 
 export type HomeContent = Awaited<ReturnType<typeof getHomeContent>>;
+
+/** Every skill, grouped by category in a fixed order; empty categories are dropped. */
+async function getSkillsByCategory() {
+  "use cache";
+  cacheTag(contentTags.skills);
+  cacheLife("max");
+  const rows = await db.skill.findMany({ orderBy: [{ position: "asc" }, { name: "asc" }] });
+  const order = ["LANGUAGE", "WEB", "DATA", "DATABASE", "TOOLING", "METHOD"] as const;
+  return order
+    .map((category) => ({ category, names: rows.filter((r) => r.category === category).map((r) => r.name) }))
+    .filter((group) => group.names.length > 0);
+}
+
+export async function getCvContent() {
+  const [projects, timeline, skills] = await Promise.all([getPublishedProjects(), getTimeline(), getSkillsByCategory()]);
+  return { profile, projects, experience: timeline.experience, education: timeline.education, skills };
+}
+
+export type CvContent = Awaited<ReturnType<typeof getCvContent>>;
+
+/** Slugs of published projects, for prerendering their case-study pages. */
+export async function getProjectSlugs(): Promise<string[]> {
+  return (await getPublishedProjects()).map((p) => p.slug);
+}
+
+/** A published project with its neighbours in display order, or null. */
+export async function getProjectPage(slug: string) {
+  const projects = await getPublishedProjects();
+  const index = projects.findIndex((p) => p.slug === slug);
+  if (index === -1) return null;
+  return {
+    project: projects[index],
+    previous: index > 0 ? projects[index - 1] : undefined,
+    next: index < projects.length - 1 ? projects[index + 1] : undefined,
+  };
+}

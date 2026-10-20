@@ -1,15 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Dictionary } from "@/lib/dictionary";
 import type { HomeContent } from "@/lib/content";
-import type { Locale } from "@/lib/i18n";
+import { localizedPath, type Locale } from "@/lib/i18n";
 import { AccentHeading } from "./accent-heading";
 import { Icon } from "./icon";
 
 type Props = { locale: Locale; t: Dictionary["about"]; profile: HomeContent["profile"] };
 
 export function About({ locale, t, profile }: Props) {
-  const cvUrl = profile.cvUrl[locale];
-
   return (
     <section className="section about on-dark" id="a-propos" aria-labelledby="a-propos-title">
       <div className="wrap about-grid">
@@ -43,14 +42,12 @@ export function About({ locale, t, profile }: Props) {
             ))}
           </dl>
           <div className="row">
-            {cvUrl && (
-              <a className="btn btn-amber" href={cvUrl} download>
-                {t.downloadCv}
-                <span className="knob">
-                  <Icon name="download" />
-                </span>
-              </a>
-            )}
+            <Link className="btn btn-amber" href={localizedPath(locale, "/cv")}>
+              {t.downloadCv}
+              <span className="knob">
+                <Icon name="arrow" />
+              </span>
+            </Link>
             <a className="btn btn-line-light" href={profile.linkedin}>
               LinkedIn
             </a>

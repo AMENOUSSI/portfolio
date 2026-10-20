@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { Project } from "@/generated/prisma/client";
 import { formKey, initialFormState, type FormState } from "@/lib/admin/form-state";
-import { CheckboxField, FormMessage, SubmitButton, TextField } from "./fields";
+import { CheckboxField, FormMessage, ImageField, SubmitButton, TextField } from "./fields";
 
 type Props = {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
@@ -61,13 +61,20 @@ export function ProjectForm({ action, project }: Props) {
 
       <fieldset>
         <legend>Image et liens</legend>
+        <ImageField
+          name="imageFile"
+          label={p ? "Remplacer l'image" : "Image"}
+          hint="JPEG, PNG, WebP ou AVIF, 3,5 Mo maximum. Une capture large (16:9) s'affiche le mieux."
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          state={state}
+          currentUrl={p?.imageUrl}
+        />
         <TextField
           name="imageUrl"
-          label="Image"
-          hint="Chemin dans public/ (ex. /images/projects/mon-projet.png) ou adresse https"
+          label="… ou chemin / adresse de l'image"
+          hint="Utilisé seulement si aucun fichier n'est choisi : /images/… ou https://…"
           state={state}
           initial={p?.imageUrl}
-          required
         />
         <div className="grid-2">
           <TextField name="imageAltFr" label="Description de l'image (FR)" state={state} initial={p?.imageAltFr} required />

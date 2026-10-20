@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import type { FormState } from "@/lib/admin/form-state";
 
@@ -96,6 +98,54 @@ export function FormMessage({ state }: { state: FormState }) {
     <p className="form-message" role="alert">
       {state.message}
     </p>
+  );
+}
+
+/** File picker with a preview of the current image and of the newly chosen file. */
+export function ImageField({
+  name,
+  label,
+  hint,
+  state,
+  currentUrl,
+  accept,
+}: {
+  name: string;
+  label: string;
+  hint: string;
+  state: FormState;
+  currentUrl?: string | null;
+  accept: string;
+}) {
+  const [preview, setPreview] = useState<string | null>(null);
+  useEffect(() => () => {
+    if (preview) URL.revokeObjectURL(preview);
+  }, [preview]);
+
+  const error = state.errors?.[name]?.[0];
+  const shown = preview ?? currentUrl;
+  return (
+    <FieldShell name={name} label={label} hint={hint} error={error}>
+      <div className="image-field">
+        {shown && (
+          <span className="image-preview">
+            <Image src={shown} alt="" fill sizes="200px" unoptimized={Boolean(preview)} />
+          </span>
+        )}
+        <input
+          id={name}
+          name={name}
+          type="file"
+          accept={accept}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${name}-error` : `${name}-hint`}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            setPreview(file ? URL.createObjectURL(file) : null);
+          }}
+        />
+      </div>
+    </FieldShell>
   );
 }
 

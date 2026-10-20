@@ -1,0 +1,264 @@
+/* CV page: an A4 sheet on screen, a clean document when printed / saved as PDF. */
+
+.cv-page {
+  padding: 24px 16px 64px;
+}
+
+.cv-toolbar {
+  max-width: 210mm;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cv-back {
+  font-weight: 600;
+  font-size: 15px;
+}
+.cv-back:hover {
+  color: var(--ambre-texte);
+}
+.cv-hint {
+  margin: 0 0 0 auto;
+  font-size: 13px;
+  color: var(--graphite);
+}
+.cv-print {
+  border: 0;
+  cursor: pointer;
+  font-family: var(--display);
+}
+
+.cv-sheet {
+  box-sizing: border-box;
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 16mm 15mm;
+  background: var(--blanc);
+  color: var(--texte);
+  font-size: 10pt;
+  line-height: 1.5;
+  box-shadow: 0 30px 60px -36px rgba(14, 26, 51, 0.45);
+  border-radius: 4px;
+}
+
+/* Header */
+.cv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--nuit);
+  position: relative;
+}
+.cv-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 64px;
+  height: 2px;
+  background: var(--ambre);
+}
+.cv-head h1 {
+  margin: 0;
+  font-size: 24pt;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+.cv-head h1 span {
+  font-family: var(--accent);
+  font-style: italic;
+  font-weight: 400;
+}
+.cv-role {
+  margin: 8px 0 0;
+  max-width: 105mm;
+  color: var(--graphite);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.cv-contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 8.5pt;
+  line-height: 1.6;
+  color: var(--graphite);
+}
+.cv-contact a:hover {
+  color: var(--texte);
+}
+
+/* Body */
+.cv-body {
+  display: grid;
+  grid-template-columns: 1fr 58mm;
+  gap: 9mm;
+  margin-top: 8mm;
+}
+.cv-sheet section + section {
+  margin-top: 6mm;
+}
+.cv-sheet h2 {
+  margin: 0 0 3mm;
+  font-family: var(--mono);
+  font-size: 8.5pt;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.cv-sheet h2::before {
+  content: "";
+  flex: none;
+  width: 14px;
+  height: 2px;
+  margin-top: 0.6em;
+  background: var(--ambre);
+}
+.cv-sheet p {
+  margin: 0;
+}
+.cv-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3.5mm;
+}
+.cv-entries li {
+  break-inside: avoid;
+}
+.cv-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.cv-sheet h3 {
+  margin: 0;
+  font-size: 10.5pt;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.cv-period {
+  font-family: var(--mono);
+  font-size: 8pt;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+.cv-org {
+  color: var(--graphite);
+}
+.cv-stack {
+  margin-top: 1mm !important;
+  font-family: var(--mono);
+  font-size: 8pt;
+  color: var(--graphite);
+}
+.cv-stack a {
+  color: var(--texte);
+}
+
+/* Sidebar */
+.cv-side {
+  border-left: 1px solid var(--trait);
+  padding-left: 6mm;
+}
+.cv-skills {
+  margin: 0;
+  display: grid;
+  gap: 2.5mm;
+}
+.cv-skills dt {
+  font-weight: 700;
+  font-size: 9pt;
+}
+.cv-skills dd {
+  margin: 0;
+  color: var(--graphite);
+}
+.cv-side .cv-period {
+  display: block;
+  margin-top: 0.5mm;
+}
+.cv-langs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1mm;
+}
+
+/* "screen" only: the printable width of A4 (~695px) would otherwise match. */
+@media screen and (max-width: 760px) {
+  .cv-sheet {
+    min-height: 0;
+    padding: 24px 18px;
+  }
+  .cv-head,
+  .cv-entry-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cv-contact {
+    text-align: left;
+  }
+  .cv-body {
+    grid-template-columns: 1fr;
+  }
+  .cv-side {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .cv-hint {
+    margin-left: 0;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 12mm 13mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+  .cv-page {
+    padding: 0;
+  }
+  .cv-toolbar {
+    display: none;
+  }
+  .cv-sheet {
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cv-sheet a {
+    text-decoration: none;
+  }
+  .cv-sheet section {
+    break-inside: auto;
+  }
+  .cv-sheet h2 {
+    break-after: avoid;
+  }
+}
