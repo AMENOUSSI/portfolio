@@ -89,3 +89,11 @@ model Experience {
 
   @@index([kind, published])
 }
+
+/// Editable texts of the public site, one row per section (identity, about…).
+/// `data` is validated by the section's zod schema in lib/site/sections.ts.
+model SiteSection {
+  key       String   @id
+  data      Json
+  updatedAt DateTime @updatedAt
+}

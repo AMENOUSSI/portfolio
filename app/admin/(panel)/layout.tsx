@@ -7,6 +7,7 @@ const links = [
   { href: "/admin/projets", label: "Projets" },
   { href: "/admin/competences", label: "Compétences" },
   { href: "/admin/experiences", label: "Parcours" },
+  { href: "/admin/site", label: "Textes du site" },
 ];
 
 export default async function PanelLayout({ children }: LayoutProps<"/admin">) {

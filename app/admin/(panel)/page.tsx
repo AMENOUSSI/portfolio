@@ -33,6 +33,10 @@ export default async function AdminHome() {
           </div>
         ))}
       </div>
+      <div className="a-card a-card-wide">
+        <span>Textes de la page d&apos;accueil, du CV et des titres de sections (FR et EN).</span>
+        <Link href="/admin/site">Modifier les textes du site</Link>
+      </div>
     </>
   );
 }

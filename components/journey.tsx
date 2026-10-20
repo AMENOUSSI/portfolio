@@ -1,11 +1,12 @@
-import type { Dictionary } from "@/lib/dictionary";
 import type { TimelineEntry } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
+import type { SectionHead } from "@/lib/site/sections";
 import { AccentHeading } from "./accent-heading";
 
 type Props = {
   locale: Locale;
-  t: Dictionary["journey"];
+  head: SectionHead;
+  labels: { experience: string; education: string };
   experience: TimelineEntry[];
   education: TimelineEntry[];
 };
@@ -24,23 +25,23 @@ function Timeline({ locale, entries }: { locale: Locale; entries: TimelineEntry[
   );
 }
 
-export function Journey({ locale, t, experience, education }: Props) {
+export function Journey({ locale, head, labels, experience, education }: Props) {
   return (
     <section className="section is-tight" id="parcours" aria-labelledby="parcours-title">
       <div className="wrap">
         <div className="head">
           <div>
-            <p className="eyebrow">{t.eyebrow}</p>
-            <AccentHeading heading={t.heading} id="parcours-title" />
+            <p className="eyebrow">{head.eyebrow}</p>
+            <AccentHeading heading={head.heading} id="parcours-title" />
           </div>
         </div>
         <div className="timeline-grid">
           <div>
-            <h3 className="tl-title">{t.experience}</h3>
+            <h3 className="tl-title">{labels.experience}</h3>
             <Timeline locale={locale} entries={experience} />
           </div>
           <div>
-            <h3 className="tl-title">{t.education}</h3>
+            <h3 className="tl-title">{labels.education}</h3>
             <Timeline locale={locale} entries={education} />
           </div>
         </div>

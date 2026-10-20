@@ -411,3 +411,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.form-message.is-success {
+  background: #e7f6ec;
+  color: #14532d;
+  margin-bottom: 20px;
+}
+.a-card-wide {
+  margin-top: 18px;
+}

@@ -3,12 +3,14 @@ import Link from "next/link";
 import type { Dictionary } from "@/lib/dictionary";
 import type { Project } from "@/lib/content";
 import { localizedPath, type Locale } from "@/lib/i18n";
+import type { SectionHead } from "@/lib/site/sections";
 import { AccentHeading } from "./accent-heading";
 import { Icon } from "./icon";
 
 type Props = {
   locale: Locale;
   t: Dictionary["projects"];
+  head: SectionHead;
   featured?: Project;
   others: Project[];
 };
@@ -46,14 +48,14 @@ function Chips({ items }: { items: string[] }) {
   );
 }
 
-export function Projects({ locale, t, featured, others }: Props) {
+export function Projects({ locale, t, head, featured, others }: Props) {
   return (
     <section className="section" id="projets" aria-labelledby="projets-title">
       <div className="wrap">
         <div className="head">
           <div>
-            <p className="eyebrow">{t.eyebrow}</p>
-            <AccentHeading heading={t.heading} id="projets-title" />
+            <p className="eyebrow">{head.eyebrow}</p>
+            <AccentHeading heading={head.heading} id="projets-title" />
           </div>
         </div>
 

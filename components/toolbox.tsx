@@ -1,6 +1,6 @@
 import * as simpleIcons from "simple-icons";
-import type { Dictionary } from "@/lib/dictionary";
 import type { Tool } from "@/lib/content";
+import type { SectionHead } from "@/lib/site/sections";
 import { AccentHeading } from "./accent-heading";
 
 /** Looks up a simple-icons slug ("nextdotjs" → `siNextdotjs`). Server-only, so the icon set never ships to the browser. */
@@ -10,7 +10,7 @@ function iconPath(slug: string): string | undefined {
   return icon?.path;
 }
 
-export function Toolbox({ t, tools }: { t: Dictionary["tools"]; tools: Tool[] }) {
+export function Toolbox({ head, tools }: { head: SectionHead; tools: Tool[] }) {
   const items = tools.flatMap((tool) => {
     const path = iconPath(tool.icon);
     return path ? [{ ...tool, path }] : [];
@@ -21,8 +21,8 @@ export function Toolbox({ t, tools }: { t: Dictionary["tools"]; tools: Tool[] })
     <section className="section is-tight" aria-labelledby="outils-title">
       <div className="wrap">
         <div className="tools-head">
-          <p className="eyebrow">{t.eyebrow}</p>
-          <AccentHeading heading={t.heading} id="outils-title" />
+          <p className="eyebrow">{head.eyebrow}</p>
+          <AccentHeading heading={head.heading} id="outils-title" />
         </div>
         <ul className="tools">
           {items.map((tool) => (

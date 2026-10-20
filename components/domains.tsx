@@ -1,19 +1,20 @@
 import type { Dictionary } from "@/lib/dictionary";
 import type { Domain } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
+import type { SectionHead } from "@/lib/site/sections";
 import { AccentHeading } from "./accent-heading";
 import { Icon } from "./icon";
 
-type Props = { locale: Locale; t: Dictionary["domains"]; domains: Domain[] };
+type Props = { locale: Locale; t: Dictionary["domains"]; head: SectionHead; domains: Domain[] };
 
-export function Domains({ locale, t, domains }: Props) {
+export function Domains({ locale, t, head, domains }: Props) {
   return (
     <section className="section after-band" id="domaines" aria-labelledby="domaines-title">
       <div className="wrap">
         <div className="head">
           <div>
-            <p className="eyebrow">{t.eyebrow}</p>
-            <AccentHeading heading={t.heading} id="domaines-title" />
+            <p className="eyebrow">{head.eyebrow}</p>
+            <AccentHeading heading={head.heading} id="domaines-title" />
           </div>
           <a className="btn btn-primary" href="#projets">
             {t.allProjects}

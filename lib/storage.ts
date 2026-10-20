@@ -54,11 +54,11 @@ export function checkImage(file: File): string | null {
   return null;
 }
 
-/** Uploads a checked image under `projects/<slug>/` and returns its public URL. */
-export async function uploadProjectImage(file: File, slug: string): Promise<string> {
+/** Uploads a checked image under `<folder>/` (e.g. "projects/my-slug") and returns its public URL. */
+export async function uploadImage(file: File, folder: string): Promise<string> {
   const { client, publicBase } = storage();
   // A new key per upload: CDN and browser caches can then keep each file forever.
-  const key = `projects/${slug}/${randomUUID()}.${EXTENSIONS[file.type]}`;
+  const key = `${folder}/${randomUUID()}.${EXTENSIONS[file.type]}`;
   await client.send(
     new PutObjectCommand({
       Bucket: BUCKET,

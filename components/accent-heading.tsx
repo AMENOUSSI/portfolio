@@ -1,7 +1,7 @@
-import type { Heading } from "@/lib/dictionary";
+import type { SectionHead } from "@/lib/site/sections";
 
 type Props = {
-  heading: Heading;
+  heading: SectionHead["heading"];
   /** Highlight the accent word with an amber marker (light sections). */
   marked?: boolean;
   as?: "h1" | "h2";

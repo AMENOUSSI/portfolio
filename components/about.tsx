@@ -3,12 +3,13 @@ import Link from "next/link";
 import type { Dictionary } from "@/lib/dictionary";
 import type { HomeContent } from "@/lib/content";
 import { localizedPath, type Locale } from "@/lib/i18n";
+import type { SectionHead } from "@/lib/site/sections";
 import { AccentHeading } from "./accent-heading";
 import { Icon } from "./icon";
 
-type Props = { locale: Locale; t: Dictionary["about"]; profile: HomeContent["profile"] };
+type Props = { locale: Locale; t: Dictionary["about"]; head: SectionHead; profile: HomeContent["profile"] };
 
-export function About({ locale, t, profile }: Props) {
+export function About({ locale, t, head, profile }: Props) {
   return (
     <section className="section about on-dark" id="a-propos" aria-labelledby="a-propos-title">
       <div className="wrap about-grid">
@@ -30,8 +31,8 @@ export function About({ locale, t, profile }: Props) {
         </div>
 
         <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <AccentHeading heading={t.heading} marked={false} id="a-propos-title" />
+          <p className="eyebrow">{head.eyebrow}</p>
+          <AccentHeading heading={head.heading} marked={false} id="a-propos-title" />
           <p className="about-text">{profile.bio[locale]}</p>
           <dl className="stats">
             {profile.stats.map((s) => (

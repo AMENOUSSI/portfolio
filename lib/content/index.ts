@@ -2,8 +2,8 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/lib/db";
 import type { Project as ProjectRow, Experience as ExperienceRow } from "@/generated/prisma/client";
-import { domains, focusAreas, milestones, profile } from "./data";
-import type { Localized, Project, TimelineEntry, Tool } from "./types";
+import { DEFAULTS, isSectionKey, sectionSchemas, type SiteContent } from "@/lib/site/sections";
+import type { Localized, Profile, Project, TimelineEntry, Tool } from "./types";
 
 export type * from "./types";
 
@@ -12,7 +12,48 @@ export const contentTags = {
   projects: "projects",
   skills: "skills",
   experiences: "experiences",
+  site: "site",
 } as const;
+
+/**
+ * Editable site texts. A section never saved from /admin, or one whose stored
+ * JSON no longer matches its schema, falls back to its default texts.
+ */
+export async function getSite(): Promise<SiteContent> {
+  "use cache";
+  cacheTag(contentTags.site);
+  cacheLife("max");
+  const rows = await db.siteSection.findMany();
+  const site = structuredClone(DEFAULTS) as Record<string, unknown>;
+  for (const row of rows) {
+    if (!isSectionKey(row.key)) continue;
+    const parsed = sectionSchemas[row.key].safeParse(row.data);
+    if (parsed.success) site[row.key] = parsed.data;
+  }
+  return site as SiteContent;
+}
+
+/** The person behind the site, assembled from the identity and about sections. */
+export function toProfile(site: SiteContent): Profile {
+  const { identity, about } = site;
+  return {
+    firstName: identity.firstName,
+    lastName: identity.lastName,
+    role: identity.role,
+    lead: identity.lead,
+    bio: about.bio,
+    location: identity.location,
+    languages: identity.languages,
+    email: identity.email,
+    github: identity.github,
+    linkedin: identity.linkedin,
+    website: identity.website,
+    portrait: identity.portrait,
+    aboutPhoto: about.photo,
+    aboutTags: about.tags,
+    stats: about.stats,
+  };
+}
 
 function pair(fr: string, en: string): Localized {
   return { fr, en };
@@ -88,14 +129,20 @@ async function getToolbox(): Promise<Tool[]> {
 }
 
 export async function getHomeContent() {
-  const [projects, timeline, tools] = await Promise.all([getPublishedProjects(), getTimeline(), getToolbox()]);
+  const [site, projects, timeline, tools] = await Promise.all([
+    getSite(),
+    getPublishedProjects(),
+    getTimeline(),
+    getToolbox(),
+  ]);
   // Only the first featured project gets the large card; any others join the grid.
   const featuredProject = projects.find((p) => p.featured);
   return {
-    profile,
-    milestones,
-    focusAreas,
-    domains,
+    site,
+    profile: toProfile(site),
+    milestones: site.career.milestones,
+    focusAreas: site.focus.items,
+    domains: site.domains.cards,
     featuredProject,
     otherProjects: projects.filter((p) => p !== featuredProject),
     experience: timeline.experience,
@@ -119,8 +166,13 @@ async function getSkillsByCategory() {
 }
 
 export async function getCvContent() {
-  const [projects, timeline, skills] = await Promise.all([getPublishedProjects(), getTimeline(), getSkillsByCategory()]);
-  return { profile, projects, experience: timeline.experience, education: timeline.education, skills };
+  const [site, projects, timeline, skills] = await Promise.all([
+    getSite(),
+    getPublishedProjects(),
+    getTimeline(),
+    getSkillsByCategory(),
+  ]);
+  return { profile: toProfile(site), projects, experience: timeline.experience, education: timeline.education, skills };
 }
 
 export type CvContent = Awaited<ReturnType<typeof getCvContent>>;

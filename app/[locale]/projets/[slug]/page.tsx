@@ -7,10 +7,10 @@ import { Contact } from "@/components/contact";
 import { Icon } from "@/components/icon";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
-import { getProjectPage, getProjectSlugs } from "@/lib/content";
-import { profile } from "@/lib/content/data";
+import { getProjectPage, getProjectSlugs, getSite, toProfile } from "@/lib/content";
 import { getDictionary } from "@/lib/dictionary";
 import { hasLocale, localizedPath, locales, type Locale } from "@/lib/i18n";
+import { sectionHead } from "@/lib/site/sections";
 import "./project.css";
 
 // Cache Components needs at least one sample param; an unknown slug just 404s.
@@ -49,10 +49,11 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/projets/
 
 export default async function ProjectPage({ params }: PageProps<"/[locale]/projets/[slug]">) {
   const [{ slug }, locale] = await Promise.all([params, currentLocale()]);
-  const [dictionary, page] = await Promise.all([getDictionary(locale), getProjectPage(slug)]);
+  const [dictionary, page, site] = await Promise.all([getDictionary(locale), getProjectPage(slug), getSite()]);
   if (!page) notFound();
 
   const { project, previous, next } = page;
+  const profile = toProfile(site);
   const t = dictionary.projectPage;
   const tp = dictionary.projects;
   const home = localizedPath(locale);
@@ -136,7 +137,7 @@ export default async function ProjectPage({ params }: PageProps<"/[locale]/proje
           </div>
 
           {(previous || next) && (
-            <nav className="case-pager" aria-label={tp.eyebrow}>
+            <nav className="case-pager" aria-label={dictionary.nav.projects}>
               {previous ? (
                 <Link href={localizedPath(locale, `/projets/${previous.slug}`)} className="case-pager-link">
                   <span>← {t.previous}</span>
@@ -155,7 +156,12 @@ export default async function ProjectPage({ params }: PageProps<"/[locale]/proje
           )}
         </div>
       </main>
-      <Contact t={dictionary.contact} email={profile.email} />
+      <Contact
+        t={dictionary.contact}
+        head={sectionHead(site.sections.contact, locale)}
+        body={site.sections.contact.body[locale]}
+        email={profile.email}
+      />
       <SiteFooter t={dictionary.footer} profile={profile} />
     </>
   );

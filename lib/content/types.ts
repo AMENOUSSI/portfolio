@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
  */
 export type Localized<T = string> = Record<Locale, T>;
 
-export type ImageRef = { src: string; width: number; height: number; alt: Localized };
+export type ImageRef = { src: string; alt: Localized };
 
 export type Profile = {
   firstName: string;

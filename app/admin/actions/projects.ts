@@ -8,7 +8,7 @@ import { contentTags } from "@/lib/content";
 import { db } from "@/lib/db";
 import { formValues, isUniqueViolation, type FormState } from "@/lib/admin/form-state";
 import { projectSchema, slugify } from "@/lib/admin/schemas";
-import { checkImage, deleteStoredImage, uploadProjectImage } from "@/lib/storage";
+import { checkImage, deleteStoredImage, uploadImage } from "@/lib/storage";
 
 type Prepared =
   | { ok: false; state: FormState }
@@ -48,7 +48,7 @@ export async function createProject(_state: FormState, formData: FormData): Prom
   if (!prepared.ok) return prepared.state;
   const { values, data, upload } = prepared;
 
-  const imageUrl = upload ? await uploadProjectImage(upload, data.slug) : data.imageUrl!;
+  const imageUrl = upload ? await uploadImage(upload, `projects/${data.slug}`) : data.imageUrl!;
   try {
     await db.project.create({ data: { ...data, imageUrl } });
   } catch (error) {
@@ -67,7 +67,7 @@ export async function updateProject(id: string, _state: FormState, formData: For
   const { values, data, upload } = prepared;
 
   const previous = await db.project.findUnique({ where: { id }, select: { imageUrl: true } });
-  const imageUrl = upload ? await uploadProjectImage(upload, data.slug) : data.imageUrl!;
+  const imageUrl = upload ? await uploadImage(upload, `projects/${data.slug}`) : data.imageUrl!;
   try {
     await db.project.update({ where: { id }, data: { ...data, imageUrl } });
   } catch (error) {

@@ -22,32 +22,14 @@
     "axisY": "y · system complexity"
   },
   "domains": {
-    "eyebrow": "Focus areas",
-    "heading": {
-      "before": "What I ",
-      "accent": "build",
-      "after": ""
-    },
     "allProjects": "All projects",
     "relatedProjects": "Related projects",
     "relatedExperience": "Related experience"
   },
   "about": {
-    "eyebrow": "About",
-    "heading": {
-      "before": "Who is ",
-      "accent": "Jules",
-      "after": "?"
-    },
     "downloadCv": "View my CV"
   },
   "projects": {
-    "eyebrow": "Selected projects",
-    "heading": {
-      "before": "Projects as ",
-      "accent": "evidence",
-      "after": ""
-    },
     "problem": "Problem",
     "approach": "Approach",
     "outcome": "Outcome",
@@ -55,32 +37,7 @@
     "live": "Visit the site",
     "caseStudy": "Case study"
   },
-  "journey": {
-    "eyebrow": "Journey",
-    "heading": {
-      "before": "Where I ",
-      "accent": "come from",
-      "after": ""
-    },
-    "experience": "Experience",
-    "education": "Education & certifications"
-  },
-  "tools": {
-    "eyebrow": "Tools",
-    "heading": {
-      "before": "My ",
-      "accent": "toolbox",
-      "after": ""
-    }
-  },
   "contact": {
-    "eyebrow": "Contact",
-    "heading": {
-      "before": "Let's talk about your ",
-      "accent": "project",
-      "after": "."
-    },
-    "body": "Internship, collaboration, master's programme or data assignment: write to me in English or French.",
     "write": "Send an email"
   },
   "footer": {
