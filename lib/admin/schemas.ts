@@ -26,6 +26,17 @@ const checkbox = z
   .optional()
   .transform((v) => v === "on");
 
+/** Textarea → list, one item per line (leading "-", "•" or "*" removed). */
+const lines = z
+  .string()
+  .optional()
+  .transform((v) =>
+    (v ?? "")
+      .split(/\r?\n/)
+      .map((s) => s.replace(/^[-•*]\s*/, "").trim())
+      .filter(Boolean),
+  );
+
 const position = z.coerce.number().int("Nombre entier attendu").min(0, "Doit être positif").default(0);
 
 export const projectSchema = z.object({
@@ -130,6 +141,8 @@ export const experienceSchema = z.object({
   organizationEn: required,
   periodFr: required,
   periodEn: required,
+  highlightsFr: lines,
+  highlightsEn: lines,
   startDate: z
     .string()
     .regex(/^\d{4}-\d{2}$/, "Mois de début requis")

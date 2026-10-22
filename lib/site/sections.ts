@@ -73,6 +73,12 @@ export const sectionSchemas = {
     certificates: heading,
     contact: heading.extend({ body: localizedOptional }),
   }),
+  /** CV-only texts, so the CV can be tailored to an application without touching the site. */
+  cv: z.object({
+    role: localizedOptional,
+    profile: localizedOptional,
+    phone: optionalText.refine((v) => !v || /^\+?[0-9][0-9 ().-]{5,24}$/.test(v), "Numéro de téléphone invalide"),
+  }),
 };
 
 export type SectionKey = keyof typeof sectionSchemas;
@@ -210,6 +216,11 @@ export const DEFAULTS: SiteContent = {
         en: "Internship, collaboration, master's programme or data assignment: write to me in English or French.",
       },
     },
+  },
+  cv: {
+    role: { fr: "", en: "" },
+    profile: { fr: "", en: "" },
+    phone: "",
   },
 };
 

@@ -113,6 +113,9 @@ model Experience {
   /// Human-readable period, e.g. "Depuis mars 2025" / "Since March 2025".
   periodFr       String
   periodEn       String
+  /// Achievements listed under the entry on the CV, one per item.
+  highlightsFr   String[]     @default([])
+  highlightsEn   String[]     @default([])
   /// Used only for ordering (newest first).
   startDate      DateTime
   current        Boolean      @default(false)

@@ -68,6 +68,8 @@ export type TimelineEntry = {
   period: Localized;
   title: Localized;
   organization: Localized;
+  /** Achievements, one per line; shown under the entry on the CV only. */
+  highlights: Localized<string[]>;
   current: boolean;
 };
 

@@ -101,6 +101,7 @@ function toTimelineEntry(row: ExperienceRow): TimelineEntry {
     period: pair(row.periodFr, row.periodEn),
     title: pair(row.titleFr, row.titleEn),
     organization: pair(row.organizationFr, row.organizationEn),
+    highlights: { fr: row.highlightsFr, en: row.highlightsEn },
     current: row.current,
   };
 }
@@ -189,7 +190,14 @@ export async function getCvContent() {
     getTimeline(),
     getSkillsByCategory(),
   ]);
-  return { profile: toProfile(site), projects, experience: timeline.experience, education: timeline.education, skills };
+  return {
+    profile: toProfile(site),
+    cv: site.cv,
+    projects,
+    experience: timeline.experience,
+    education: timeline.education,
+    skills,
+  };
 }
 
 export type CvContent = Awaited<ReturnType<typeof getCvContent>>;

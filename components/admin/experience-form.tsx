@@ -59,6 +59,22 @@ export function ExperienceForm({ action, experience: e }: Props) {
             initial={e?.periodEn}
             required
           />
+          <TextField
+            name="highlightsFr"
+            label="Réalisations (FR)"
+            hint="Une par ligne, 2 ou 3 maximum. Affichées sous l'expérience, sur le CV seulement. Ex. Automatisé le rapprochement des transactions (−60 % de temps)"
+            multiline
+            state={state}
+            initial={e?.highlightsFr.join("\n")}
+          />
+          <TextField
+            name="highlightsEn"
+            label="Réalisations (EN)"
+            hint="One per line."
+            multiline
+            state={state}
+            initial={e?.highlightsEn.join("\n")}
+          />
         </div>
         <div className="checks">
           <CheckboxField name="current" label="En cours (affiché en premier, point ambre)" state={state} initial={e?.current ?? false} />

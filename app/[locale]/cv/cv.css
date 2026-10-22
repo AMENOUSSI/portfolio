@@ -93,8 +93,46 @@
   line-height: 1.6;
   color: var(--graphite);
 }
+.cv-contact li {
+  white-space: nowrap;
+}
 .cv-contact a:hover {
   color: var(--texte);
+}
+.cv-head-side {
+  display: flex;
+  align-items: flex-end;
+  gap: 4mm;
+}
+.cv-qr {
+  display: grid;
+  justify-items: center;
+  gap: 1mm;
+  text-decoration: none;
+}
+.cv-qr-code,
+.cv-qr-code svg {
+  display: block;
+  width: 19mm;
+  height: 19mm;
+}
+.cv-qr-label {
+  font-family: var(--mono);
+  font-size: 6.5pt;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+.cv-highlights {
+  margin: 1mm 0 0;
+  padding-left: 4mm;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+.cv-highlights li + li {
+  margin-top: 0.6mm;
+}
+.cv-highlights li::marker {
+  color: var(--ambre-texte, var(--ambre));
 }
 
 /* Body */
@@ -214,6 +252,14 @@
   }
   .cv-contact {
     text-align: left;
+  }
+  .cv-contact li {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  /* On a phone the visitor is already on the site: the QR code only matters on paper. */
+  .cv-qr {
+    display: none;
   }
   .cv-body {
     grid-template-columns: 1fr;

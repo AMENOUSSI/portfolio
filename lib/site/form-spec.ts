@@ -184,6 +184,37 @@ export const sectionSpecs: Record<SectionKey, SectionSpec> = {
       },
     ],
   },
+
+  cv: {
+    title: "CV",
+    description: "Titre, profil et téléphone propres au CV, à adapter à chaque candidature sans toucher au site.",
+    groups: [
+      {
+        title: "En-tête du CV",
+        hint: "Laissez un champ vide pour reprendre le texte du site.",
+        fields: [
+          {
+            kind: "textarea",
+            path: "role",
+            label: "Titre du CV",
+            hint: "Reprenez l'intitulé du poste visé. Ex. Développeur full-stack · Next.js & PostgreSQL",
+            localized: true,
+          },
+          {
+            kind: "text",
+            path: "phone",
+            label: "Téléphone",
+            hint: "Ex. +228 90 00 00 00. Affiché seulement sur le CV, qui est une page publique (/cv).",
+          },
+        ],
+      },
+      {
+        title: "Profil",
+        hint: "Trois lignes sur ce que vous apportez au poste. Vide : reprend le texte « À propos » du site.",
+        fields: [{ kind: "textarea", path: "profile", label: "Profil", localized: true }],
+      },
+    ],
+  },
 };
 
 /** Every form input name a field produces (localized fields produce two). */

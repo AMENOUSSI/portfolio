@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { locale as rootLocale } from "next/root-params";
 import { notFound } from "next/navigation";
+import QRCode from "qrcode";
 import { getCvContent } from "@/lib/content";
 import { getDictionary } from "@/lib/dictionary";
 import { hasLocale, localizedPath, locales, type Locale } from "@/lib/i18n";
@@ -32,13 +33,28 @@ function bare(url: string) {
   return url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 }
 
+/** QR code (inline SVG) pointing to the portfolio home page in the CV's language. */
+function portfolioQr(website: string, locale: Locale) {
+  const target = `${website.replace(/\/$/, "")}${locale === "en" ? "/en" : ""}`;
+  return QRCode.toString(target, {
+    type: "svg",
+    margin: 0,
+    errorCorrectionLevel: "M",
+    color: { dark: "#0e1a33", light: "#0000" },
+  });
+}
+
 export default async function CvPage() {
   const locale = await currentLocale();
-  const [dictionary, { profile, projects, experience, education, skills }] = await Promise.all([
+  const [dictionary, { profile, cv, projects, experience, education, skills }] = await Promise.all([
     getDictionary(locale),
     getCvContent(),
   ]);
   const t = dictionary.cv;
+  // CV-specific texts win; empty ones fall back to the site's.
+  const role = cv.role[locale] || profile.role[locale];
+  const bio = cv.profile[locale] || profile.bio[locale];
+  const qr = await portfolioQr(profile.website, locale);
 
   return (
     <div className="cv-page">
@@ -56,30 +72,44 @@ export default async function CvPage() {
             <h1>
               {profile.firstName} <span>{profile.lastName}</span>
             </h1>
-            <p className="cv-role">{profile.role[locale]}</p>
+            <p className="cv-role">{role}</p>
           </div>
-          <ul className="cv-contact">
-            <li>{profile.location}</li>
-            <li>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            </li>
-            <li>
-              <a href={profile.website}>{bare(profile.website)}</a>
-            </li>
-            <li>
-              <a href={profile.github}>{bare(profile.github)}</a>
-            </li>
-            <li>
-              <a href={profile.linkedin}>{bare(profile.linkedin)}</a>
-            </li>
-          </ul>
+          <div className="cv-head-side">
+            <ul className="cv-contact">
+              <li>
+                {profile.location}
+                {cv.phone && (
+                  <>
+                    {" · "}
+                    <a href={`tel:${cv.phone.replace(/[^+\d]/g, "")}`}>{cv.phone}</a>
+                  </>
+                )}
+              </li>
+              <li>
+                <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              </li>
+              <li>
+                <a href={profile.website}>{bare(profile.website)}</a>
+              </li>
+              <li>
+                <a href={profile.github}>{bare(profile.github)}</a>
+              </li>
+              <li>
+                <a href={profile.linkedin}>{bare(profile.linkedin)}</a>
+              </li>
+            </ul>
+            <a className="cv-qr" href={profile.website}>
+              <span className="cv-qr-code" aria-hidden="true" dangerouslySetInnerHTML={{ __html: qr }} />
+              <span className="cv-qr-label">{t.qr}</span>
+            </a>
+          </div>
         </header>
 
         <div className="cv-body">
           <div className="cv-main">
             <section>
               <h2>{t.profile}</h2>
-              <p>{profile.bio[locale]}</p>
+              <p>{bio}</p>
             </section>
 
             <section>
@@ -92,6 +122,13 @@ export default async function CvPage() {
                       <span className="cv-period">{e.period[locale]}</span>
                     </div>
                     <p className="cv-org">{e.organization[locale]}</p>
+                    {e.highlights[locale].length > 0 && (
+                      <ul className="cv-highlights">
+                        {e.highlights[locale].map((h) => (
+                          <li key={h}>{h}</li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 ))}
               </ol>
