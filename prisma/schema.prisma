@@ -35,6 +35,8 @@ model Project {
   captionEn  String?
   repoUrl    String?
   liveUrl    String?
+  /// YouTube link to a demo video, for projects without a public site or repo.
+  videoUrl   String?
   featured   Boolean  @default(false)
   published  Boolean  @default(true)
   position   Int      @default(0)

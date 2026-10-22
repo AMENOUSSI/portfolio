@@ -93,6 +93,14 @@ export function ProjectForm({ action, project, categories }: Props) {
           <TextField name="repoUrl" label="Code source" type="url" state={state} initial={p?.repoUrl} />
           <TextField name="liveUrl" label="Site en ligne" type="url" state={state} initial={p?.liveUrl} />
         </div>
+        <TextField
+          name="videoUrl"
+          label="Vidéo de démo (YouTube)"
+          hint="Lien youtube.com/watch?v=… ou youtu.be/… ; une vidéo « Non répertoriée » suffit. Ajoute un bouton « Voir la démo » et un lecteur sur la page du projet."
+          type="url"
+          state={state}
+          initial={p?.videoUrl}
+        />
       </fieldset>
 
       <fieldset>

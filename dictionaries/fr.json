@@ -35,6 +35,7 @@
     "outcome": "Résultat",
     "source": "Code source",
     "live": "Voir le site",
+    "demo": "Voir la démo",
     "caseStudy": "Étude de cas",
     "filterAll": "Tous",
     "filterLabel": "Filtrer les projets par domaine",
@@ -73,7 +74,8 @@
     "stack": "Technologies",
     "previous": "Projet précédent",
     "next": "Projet suivant",
-    "links": "Liens"
+    "links": "Liens",
+    "demo": "Démo vidéo"
   },
   "notFound": {
     "title": "Page introuvable",

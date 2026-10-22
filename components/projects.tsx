@@ -37,6 +37,12 @@ function ProjectLinks({ project, t, locale }: { project: Project; t: Dictionary[
           {t.live}
         </a>
       )}
+      {project.videoEmbedUrl && (
+        <Link href={localizedPath(locale, `/projets/${project.slug}#demo`)}>
+          <Icon name="play" />
+          {t.demo}
+        </Link>
+      )}
     </div>
   );
 }

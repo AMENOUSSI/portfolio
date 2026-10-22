@@ -57,6 +57,8 @@ export type Project = {
   caption?: Localized;
   repoUrl?: string;
   liveUrl?: string;
+  /** YouTube player address for the demo video, if any. */
+  videoEmbedUrl?: string;
   featured: boolean;
   categories: ProjectCategory[];
 };

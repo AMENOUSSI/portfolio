@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/lib/db";
+import { youTubeEmbedUrl } from "@/lib/youtube";
 import type {
   Certificate as CertificateRow,
   Experience as ExperienceRow,
@@ -88,6 +89,7 @@ function toProject(row: ProjectRow & { categories: CategoryRow[] }): Project {
     caption: optionalPair(row.captionFr, row.captionEn),
     repoUrl: row.repoUrl ?? undefined,
     liveUrl: row.liveUrl ?? undefined,
+    videoEmbedUrl: (row.videoUrl && youTubeEmbedUrl(row.videoUrl)) || undefined,
     featured: row.featured,
     categories: [...row.categories].sort((x, y) => x.position - y.position).map(toCategory),
   };

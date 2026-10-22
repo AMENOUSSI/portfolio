@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { youTubeId } from "@/lib/youtube";
 
 /*
  * Validation for the admin forms. Inputs arrive as FormData strings, so each
@@ -65,6 +66,12 @@ export const projectSchema = z.object({
   captionEn: optional,
   repoUrl: optionalUrl,
   liveUrl: optionalUrl,
+  videoUrl: z
+    .string()
+    .trim()
+    .optional()
+    .refine((v) => !v || youTubeId(v) !== null, "Lien YouTube attendu (youtube.com/watch?v=… ou youtu.be/…)")
+    .transform((v) => (v ? v : null)),
   featured: checkbox,
   published: checkbox,
   position,

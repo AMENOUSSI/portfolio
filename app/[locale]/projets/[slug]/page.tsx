@@ -87,6 +87,22 @@ export default async function ProjectPage({ params }: PageProps<"/[locale]/proje
             {project.caption && <figcaption className="caption">{project.caption[locale]}</figcaption>}
           </figure>
 
+          {project.videoEmbedUrl && (
+            <section className="case-video" id="demo" aria-labelledby="demo-title">
+              <h2 id="demo-title">{t.demo}</h2>
+              <div className="case-video-frame">
+                <iframe
+                  src={project.videoEmbedUrl}
+                  title={`${t.demo} — ${project.title[locale]}`}
+                  loading="lazy"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              </div>
+            </section>
+          )}
+
           <div className="case-grid">
             {project.caseStudy ? (
               <dl className="case-steps">
@@ -114,7 +130,7 @@ export default async function ProjectPage({ params }: PageProps<"/[locale]/proje
                   <li key={s}>{s}</li>
                 ))}
               </ul>
-              {(project.repoUrl || project.liveUrl) && (
+              {(project.repoUrl || project.liveUrl || project.videoEmbedUrl) && (
                 <>
                   <h2>{t.links}</h2>
                   <div className="links case-links">
@@ -128,6 +144,12 @@ export default async function ProjectPage({ params }: PageProps<"/[locale]/proje
                       <a href={project.liveUrl}>
                         <Icon name="external" />
                         {tp.live}
+                      </a>
+                    )}
+                    {project.videoEmbedUrl && (
+                      <a href="#demo">
+                        <Icon name="play" />
+                        {tp.demo}
                       </a>
                     )}
                   </div>
