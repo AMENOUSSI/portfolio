@@ -91,6 +91,7 @@ function toProject(row: ProjectRow & { categories: CategoryRow[] }): Project {
     liveUrl: row.liveUrl ?? undefined,
     videoEmbedUrl: (row.videoUrl && youTubeEmbedUrl(row.videoUrl)) || undefined,
     featured: row.featured,
+    showOnCv: row.showOnCv,
     categories: [...row.categories].sort((x, y) => x.position - y.position).map(toCategory),
   };
 }
@@ -193,7 +194,7 @@ export async function getCvContent() {
   return {
     profile: toProfile(site),
     cv: site.cv,
-    projects,
+    projects: projects.filter((p) => p.showOnCv),
     experience: timeline.experience,
     education: timeline.education,
     skills,

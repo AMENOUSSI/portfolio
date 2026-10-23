@@ -125,6 +125,7 @@ export function ProjectForm({ action, project, categories }: Props) {
         <div className="checks">
           <CheckboxField name="published" label="Publié sur le site" state={state} initial={p?.published ?? true} />
           <CheckboxField name="featured" label="Mis en avant (grande carte)" state={state} initial={p?.featured ?? false} />
+          <CheckboxField name="showOnCv" label="Afficher sur le CV" state={state} initial={p?.showOnCv ?? true} />
         </div>
       </fieldset>
 

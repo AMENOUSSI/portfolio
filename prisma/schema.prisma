@@ -39,6 +39,8 @@ model Project {
   videoUrl   String?
   featured   Boolean  @default(false)
   published  Boolean  @default(true)
+  /// Listed on the printable CV (/cv); untick to keep a published project off the CV.
+  showOnCv   Boolean  @default(true)
   position   Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

@@ -60,6 +60,8 @@ export type Project = {
   /** YouTube player address for the demo video, if any. */
   videoEmbedUrl?: string;
   featured: boolean;
+  /** Listed on the printable CV. */
+  showOnCv: boolean;
   categories: ProjectCategory[];
 };
 

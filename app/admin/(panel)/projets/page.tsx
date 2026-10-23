@@ -43,6 +43,7 @@ export default async function ProjectsAdmin() {
                   <td>
                     <span className={p.published ? "badge is-on" : "badge"}>{p.published ? "Publié" : "Brouillon"}</span>
                     {p.featured && <span className="badge is-on">Mis en avant</span>}
+                    {p.published && p.showOnCv && <span className="badge is-on">Sur le CV</span>}
                   </td>
                 </tr>
               ))}

@@ -85,6 +85,7 @@ export const projectSchema = z.object({
     .transform((v) => (v ? v : null)),
   featured: checkbox,
   published: checkbox,
+  showOnCv: checkbox,
   position,
 });
 
